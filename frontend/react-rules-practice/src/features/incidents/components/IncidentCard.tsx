@@ -7,6 +7,14 @@ type IncidentCardProps = {
   incident: Incident
 }
 
+function getStatusClass(status: Incident['status']): string {
+  return `incident-badge incident-badge-status-${status.toLowerCase()}`
+}
+
+function getSeverityClass(severity: Incident['severity']): string {
+  return `incident-badge incident-badge-severity-${severity.toLowerCase()}`
+}
+
 function IncidentCardComponent({ incident }: IncidentCardProps) {
   return (
     <article className="incident-card">
@@ -14,7 +22,7 @@ function IncidentCardComponent({ incident }: IncidentCardProps) {
         <div>
           <h3 className="incident-card-title">{incident.title}</h3>
 
-          <p>
+          <p className="incident-card-id">
             <strong>ID:</strong> {incident.id}
           </p>
         </div>
@@ -25,8 +33,8 @@ function IncidentCardComponent({ incident }: IncidentCardProps) {
       </div>
 
       <div className="incident-badges">
-        <span className="incident-badge">{incident.status}</span>
-        <span className="incident-badge">{incident.severity}</span>
+        <span className={getStatusClass(incident.status)}>{incident.status}</span>
+        <span className={getSeverityClass(incident.severity)}>{incident.severity}</span>
       </div>
 
       <p className="incident-card-description">{incident.description}</p>
@@ -40,7 +48,7 @@ function IncidentCardComponent({ incident }: IncidentCardProps) {
         </ul>
       </details>
 
-      <p>
+      <p className="incident-card-notes">
         <strong>Notes:</strong> {incident.notes.length}
       </p>
     </article>

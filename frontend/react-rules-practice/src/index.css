@@ -1,7 +1,40 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color: #1f2937;
-  background: #f3f4f6;
+
+  color: #172033;
+  background: #eef2f7;
+
+  --color-surface: #ffffff;
+  --color-surface-soft: #f8fafc;
+  --color-text: #172033;
+  --color-muted: #64748b;
+  --color-border: #dbe3ef;
+
+  --color-primary: #1d4ed8;
+  --color-primary-dark: #1e3a8a;
+
+  --status-open-bg: #dbeafe;
+  --status-open-text: #1e40af;
+
+  --status-investigating-bg: #fef3c7;
+  --status-investigating-text: #92400e;
+
+  --status-resolved-bg: #dcfce7;
+  --status-resolved-text: #166534;
+
+  --severity-low-bg: #e0f2fe;
+  --severity-low-text: #0369a1;
+
+  --severity-medium-bg: #ede9fe;
+  --severity-medium-text: #5b21b6;
+
+  --severity-high-bg: #ffedd5;
+  --severity-high-text: #c2410c;
+
+  --severity-critical-bg: #fee2e2;
+  --severity-critical-text: #991b1b;
+
+  --shadow-card: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 * {
@@ -23,6 +56,10 @@ input {
 
 button {
   cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(0.95);
 }
 
 a {
