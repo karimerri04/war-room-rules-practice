@@ -1,0 +1,17 @@
+.incident-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.incident-list-title {
+  margin: 0;
+  color: #111827;
+}
+
+.incident-list-empty {
+  padding: 24px;
+  border-radius: 14px;
+  background: white;
+  color: #6b7280;
+}

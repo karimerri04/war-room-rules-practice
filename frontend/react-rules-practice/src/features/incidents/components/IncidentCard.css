@@ -1,0 +1,48 @@
+.incident-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.incident-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.incident-card-title {
+  margin: 0;
+  color: #111827;
+}
+
+.incident-card-description {
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.incident-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.incident-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.incident-card details {
+  margin-top: 16px;
+}
+
+.incident-card ul {
+  margin-bottom: 0;
+}

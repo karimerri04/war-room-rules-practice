@@ -1,0 +1,29 @@
+.incident-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: end;
+  padding: 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.incident-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.incident-filter-field label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.incident-filter-field select {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+}
