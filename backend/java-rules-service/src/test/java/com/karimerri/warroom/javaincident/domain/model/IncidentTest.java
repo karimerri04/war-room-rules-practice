@@ -9,129 +9,118 @@ import static org.assertj.core.api.Assertions.*;
 
 class IncidentTest {
 
-    @Test
-    void shouldCreateOpenIncident() {
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-001"),
-                "Test incident",
-                "A test incident description",
-                IncidentSeverity.HIGH,
-                List.of("Symptom 1", "Symptom 2")
-        );
+	@Test
+	void shouldCreateOpenIncident() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-001"), "Test incident",
+				"A test incident description", IncidentSeverity.HIGH, List.of("Symptom 1", "Symptom 2"));
 
-        assertThat(incident.getId()).isEqualTo(IncidentId.of("JAVA-INC-TEST-001"));
-        assertThat(incident.getTitle()).isEqualTo("Test incident");
-        assertThat(incident.getDescription()).isEqualTo("A test incident description");
-        assertThat(incident.getSeverity()).isEqualTo(IncidentSeverity.HIGH);
-        assertThat(incident.getStatus()).isEqualTo(IncidentStatus.OPEN);
-        assertThat(incident.getSymptoms()).containsExactly("Symptom 1", "Symptom 2");
-        assertThat(incident.getRootCause()).isEmpty();
-        assertThat(incident.getResolution()).isEmpty();
-        assertThat(incident.getCreatedAt()).isNotNull();
-        assertThat(incident.getResolvedAt()).isNull();
-    }
+		assertThat(incident.getId()).isEqualTo(IncidentId.of("JAVA-INC-TEST-001"));
+		assertThat(incident.getTitle()).isEqualTo("Test incident");
+		assertThat(incident.getDescription()).isEqualTo("A test incident description");
+		assertThat(incident.getSeverity()).isEqualTo(IncidentSeverity.HIGH);
+		assertThat(incident.getStatus()).isEqualTo(IncidentStatus.OPEN);
+		assertThat(incident.getSymptoms()).containsExactly("Symptom 1", "Symptom 2");
+		assertThat(incident.getRootCause()).isEmpty();
+		assertThat(incident.getResolution()).isEmpty();
+		assertThat(incident.getCreatedAt()).isNotNull();
+		assertThat(incident.getResolvedAt()).isNull();
+	}
 
-    @Test
-    void shouldResolveIncidentByReturningNewResolvedInstance() {
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-002"),
-                "Incident to resolve",
-                "The incident must be resolved",
-                IncidentSeverity.MEDIUM,
-                List.of("Unexpected status")
-        );
+	@Test
+	void shouldResolveIncidentByReturningNewResolvedInstance() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-002"), "Incident to resolve",
+				"The incident must be resolved", IncidentSeverity.MEDIUM, List.of("Unexpected status"));
 
-        Incident resolved = incident.resolve(
-                "Missing Optional handling",
-                "Return Optional.empty and translate absence to 404"
-        );
+		Incident resolved = incident.resolve("Missing Optional handling",
+				"Return Optional.empty and translate absence to 404");
 
-        assertThat(resolved).isNotSameAs(incident);
-        assertThat(resolved.getId()).isEqualTo(incident.getId());
-        assertThat(resolved.getStatus()).isEqualTo(IncidentStatus.RESOLVED);
-        assertThat(resolved.getRootCause()).isEqualTo("Missing Optional handling");
-        assertThat(resolved.getResolution()).isEqualTo("Return Optional.empty and translate absence to 404");
-        assertThat(resolved.getCreatedAt()).isEqualTo(incident.getCreatedAt());
-        assertThat(resolved.getResolvedAt()).isNotNull();
+		assertThat(resolved).isNotSameAs(incident);
+		assertThat(resolved.getId()).isEqualTo(incident.getId());
+		assertThat(resolved.getStatus()).isEqualTo(IncidentStatus.RESOLVED);
+		assertThat(resolved.getRootCause()).isEqualTo("Missing Optional handling");
+		assertThat(resolved.getResolution()).isEqualTo("Return Optional.empty and translate absence to 404");
+		assertThat(resolved.getCreatedAt()).isEqualTo(incident.getCreatedAt());
+		assertThat(resolved.getResolvedAt()).isNotNull();
 
-        assertThat(incident.getStatus()).isEqualTo(IncidentStatus.OPEN);
-        assertThat(incident.getResolvedAt()).isNull();
-    }
+		assertThat(incident.getStatus()).isEqualTo(IncidentStatus.OPEN);
+		assertThat(incident.getResolvedAt()).isNull();
+	}
 
-    @Test
-    void shouldRejectBlankTitle() {
-        assertThatThrownBy(() -> Incident.open(
-                IncidentId.of("JAVA-INC-TEST-003"),
-                " ",
-                "Description",
-                IncidentSeverity.LOW,
-                List.of("Symptom")
-        ))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("title must not be blank");
-    }
+	@Test
+	void shouldRejectBlankTitle() {
+		assertThatThrownBy(() -> Incident.open(IncidentId.of("JAVA-INC-TEST-003"), " ", "Description",
+				IncidentSeverity.LOW, List.of("Symptom"))).isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("title must not be blank");
+	}
 
-    @Test
-    void shouldRejectBlankResolutionWhenResolving() {
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-004"),
-                "Incident",
-                "Description",
-                IncidentSeverity.LOW,
-                List.of("Symptom")
-        );
+	@Test
+	void shouldRejectBlankResolutionWhenResolving() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-004"), "Incident", "Description",
+				IncidentSeverity.LOW, List.of("Symptom"));
 
-        assertThatThrownBy(() -> incident.resolve("Root cause", " "))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("resolution must not be blank");
-    }
+		assertThatThrownBy(() -> incident.resolve("Root cause", " ")).isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("resolution must not be blank");
+	}
 
-    @Test
-    void shouldRejectResolvingAlreadyResolvedIncident() {
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-005"),
-                "Incident",
-                "Description",
-                IncidentSeverity.LOW,
-                List.of("Symptom")
-        );
+	@Test
+	void shouldRejectResolvingAlreadyResolvedIncident() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-005"), "Incident", "Description",
+				IncidentSeverity.LOW, List.of("Symptom"));
 
-        Incident resolved = incident.resolve("Root cause", "Resolution");
+		Incident resolved = incident.resolve("Root cause", "Resolution");
 
-        assertThatThrownBy(() -> resolved.resolve("Another root cause", "Another resolution"))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Incident is already resolved");
-    }
+		assertThatThrownBy(() -> resolved.resolve("Another root cause", "Another resolution"))
+				.isInstanceOf(IllegalStateException.class).hasMessage("Incident is already resolved");
+	}
 
-    @Test
-    void shouldProtectSymptomsFromExternalMutation() {
-        List<String> symptoms = new java.util.ArrayList<>();
-        symptoms.add("Initial symptom");
+	@Test
+	void shouldProtectSymptomsFromExternalMutation() {
+		List<String> symptoms = new java.util.ArrayList<>();
+		symptoms.add("Initial symptom");
 
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-006"),
-                "Incident",
-                "Description",
-                IncidentSeverity.LOW,
-                symptoms
-        );
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-006"), "Incident", "Description",
+				IncidentSeverity.LOW, symptoms);
 
-        symptoms.add("External mutation");
+		symptoms.add("External mutation");
 
-        assertThat(incident.getSymptoms()).containsExactly("Initial symptom");
-    }
+		assertThat(incident.getSymptoms()).containsExactly("Initial symptom");
+	}
 
-    @Test
-    void shouldExposeUnmodifiableSymptomsList() {
-        Incident incident = Incident.open(
-                IncidentId.of("JAVA-INC-TEST-007"),
-                "Incident",
-                "Description",
-                IncidentSeverity.LOW,
-                List.of("Symptom")
-        );
+	@Test
+	void shouldExposeUnmodifiableSymptomsList() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-007"), "Incident", "Description",
+				IncidentSeverity.LOW, List.of("Symptom"));
 
-        assertThatThrownBy(() -> incident.getSymptoms().add("Mutation attempt"))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
+		assertThatThrownBy(() -> incident.getSymptoms().add("Mutation attempt"))
+				.isInstanceOf(UnsupportedOperationException.class);
+	}
+
+	@Test
+	void shouldAddInvestigationNoteByReturningNewInstance() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-011"), "Incident", "Description",
+				IncidentSeverity.HIGH, List.of("Symptom"));
+
+		Incident updated = incident.addNote("Karim",
+				"Checked repository contract and found missing Optional handling.");
+
+		assertThat(updated).isNotSameAs(incident);
+		assertThat(updated.getId()).isEqualTo(incident.getId());
+		assertThat(updated.getNotes()).hasSize(1);
+		assertThat(updated.getNotes().getFirst().getAuthor()).isEqualTo("Karim");
+		assertThat(updated.getNotes().getFirst().getMessage())
+				.isEqualTo("Checked repository contract and found missing Optional handling.");
+
+		assertThat(incident.getNotes()).isEmpty();
+	}
+
+	@Test
+	void shouldExposeUnmodifiableNotesList() {
+		Incident incident = Incident.open(IncidentId.of("JAVA-INC-TEST-012"), "Incident", "Description",
+				IncidentSeverity.HIGH, List.of("Symptom"));
+
+		Incident updated = incident.addNote("Karim", "First note");
+
+		assertThatThrownBy(() -> updated.getNotes().add(InvestigationNote.of("Other", "Mutation attempt")))
+				.isInstanceOf(UnsupportedOperationException.class);
+	}
 }

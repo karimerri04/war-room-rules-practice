@@ -2,8 +2,11 @@ package com.karimerri.warroom.javaincident.api.mapper;
 
 import com.karimerri.warroom.javaincident.api.dto.IncidentResponse;
 import com.karimerri.warroom.javaincident.api.dto.IncidentStatsResponse;
+import com.karimerri.warroom.javaincident.api.dto.InvestigationNoteResponse;
 import com.karimerri.warroom.javaincident.application.usecase.IncidentStats;
 import com.karimerri.warroom.javaincident.domain.model.Incident;
+import com.karimerri.warroom.javaincident.domain.model.InvestigationNote;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +23,11 @@ public class IncidentMapper {
                 incident.getRootCause(),
                 incident.getResolution(),
                 incident.getCreatedAt(),
-                incident.getResolvedAt()
+                incident.getResolvedAt(),
+                incident.getNotes()
+                .stream()
+                .map(this::toNoteResponse)
+                .toList()
         );
     }
     
@@ -34,6 +41,14 @@ public class IncidentMapper {
                 stats.high(),
                 stats.medium(),
                 stats.low()
+        );
+    }
+    
+    private InvestigationNoteResponse toNoteResponse(InvestigationNote note) {
+        return new InvestigationNoteResponse(
+                note.getAuthor(),
+                note.getMessage(),
+                note.getCreatedAt()
         );
     }
 }

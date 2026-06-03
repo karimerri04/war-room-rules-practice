@@ -35,10 +35,12 @@ public final class Incident {
 	private final String resolution;
 	private final Instant createdAt;
 	private final Instant resolvedAt;
+	private final List<InvestigationNote> notes;
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private Incident(IncidentId id, String title, String description, IncidentSeverity severity, IncidentStatus status,
-			List<String> symptoms, String rootCause, String resolution, Instant createdAt, Instant resolvedAt) {
+			List<String> symptoms, String rootCause, String resolution, Instant createdAt, Instant resolvedAt,
+			List<InvestigationNote> notes) {
 		this.id = Objects.requireNonNull(id, "id must not be null");
 		this.title = requireText(title, "title");
 		this.description = requireText(description, "description");
@@ -49,6 +51,7 @@ public final class Incident {
 		this.resolution = resolution == null ? "" : resolution.trim();
 		this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
 		this.resolvedAt = resolvedAt;
+		this.notes = List.copyOf(Objects.requireNonNull(notes, "notes must not be null"));
 	}
 
 	/**
@@ -65,7 +68,7 @@ public final class Incident {
 			List<String> symptoms) {
 		return Incident.builder().id(id).title(title).description(description).severity(severity)
 				.status(IncidentStatus.OPEN).symptoms(symptoms).rootCause("").resolution("").createdAt(Instant.now())
-				.resolvedAt(null).build();
+				.resolvedAt(null).notes(List.of()).build();
 	}
 
 	/**
@@ -84,7 +87,7 @@ public final class Incident {
 		return Incident.builder().id(id).title(title).description(description).severity(severity)
 				.status(IncidentStatus.RESOLVED).symptoms(symptoms).rootCause(requireText(rootCause, "rootCause"))
 				.resolution(requireText(resolution, "resolution")).createdAt(createdAt).resolvedAt(Instant.now())
-				.build();
+				.notes(notes).build();
 	}
 
 	/**
@@ -101,7 +104,25 @@ public final class Incident {
 
 		return Incident.builder().id(id).title(title).description(description).severity(severity)
 				.status(IncidentStatus.INVESTIGATING).symptoms(symptoms).rootCause(rootCause).resolution(resolution)
-				.createdAt(createdAt).resolvedAt(resolvedAt).build();
+				.createdAt(createdAt).resolvedAt(resolvedAt).notes(notes).build();
+	}
+
+	/**
+	 * Ajoute une note d’investigation à l’incident.
+	 *
+	 * @param author  auteur de la note
+	 * @param message contenu de la note
+	 * @return une nouvelle instance contenant la note ajoutée
+	 */
+	public Incident addNote(String author, String message) {
+		InvestigationNote note = InvestigationNote.of(author, message);
+
+		List<InvestigationNote> updatedNotes = new java.util.ArrayList<>(notes);
+		updatedNotes.add(note);
+
+		return Incident.builder().id(id).title(title).description(description).severity(severity).status(status)
+				.symptoms(symptoms).rootCause(rootCause).resolution(resolution).createdAt(createdAt)
+				.resolvedAt(resolvedAt).notes(updatedNotes).build();
 	}
 
 	private static String requireText(String value, String fieldName) {

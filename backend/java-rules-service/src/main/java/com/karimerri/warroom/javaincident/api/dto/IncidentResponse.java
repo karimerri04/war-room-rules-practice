@@ -33,6 +33,8 @@ public record IncidentResponse(
 
         Instant createdAt,
 
-        Instant resolvedAt
+        Instant resolvedAt,
+        
+        List<InvestigationNoteResponse> notes
 ) {
 }

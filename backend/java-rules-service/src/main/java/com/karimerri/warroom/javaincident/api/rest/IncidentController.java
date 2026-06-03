@@ -1,9 +1,11 @@
 package com.karimerri.warroom.javaincident.api.rest;
 
+import com.karimerri.warroom.javaincident.api.dto.AddIncidentNoteRequest;
 import com.karimerri.warroom.javaincident.api.dto.IncidentResponse;
 import com.karimerri.warroom.javaincident.api.dto.IncidentStatsResponse;
 import com.karimerri.warroom.javaincident.api.dto.ResolveIncidentRequest;
 import com.karimerri.warroom.javaincident.api.mapper.IncidentMapper;
+import com.karimerri.warroom.javaincident.application.usecase.AddIncidentNoteUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.FindAllIncidentsUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.FindIncidentByIdUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.GetIncidentStatsUseCase;
@@ -30,6 +32,7 @@ public class IncidentController {
 	private final ResolveIncidentUseCase resolveIncidentUseCase;
 	private final GetIncidentStatsUseCase getIncidentStatsUseCase;
 	private final StartIncidentInvestigationUseCase startIncidentInvestigationUseCase;
+	private final AddIncidentNoteUseCase addIncidentNoteUseCase;
 	private final IncidentMapper mapper;
 
 	@GetMapping
@@ -49,16 +52,22 @@ public class IncidentController {
 	public IncidentResponse findById(@PathVariable String id) {
 		return mapper.toResponse(findIncidentByIdUseCase.execute(id));
 	}
-	
+
 	@PatchMapping("/{id}/start-investigation")
 	@Operation(summary = "Start investigation for a Java incident")
 	public IncidentResponse startInvestigation(@PathVariable String id) {
-	    return mapper.toResponse(startIncidentInvestigationUseCase.execute(id));
+		return mapper.toResponse(startIncidentInvestigationUseCase.execute(id));
 	}
 
 	@PatchMapping("/{id}/resolve")
 	@Operation(summary = "Resolve a Java incident")
 	public IncidentResponse resolve(@PathVariable String id, @Valid @RequestBody ResolveIncidentRequest request) {
 		return mapper.toResponse(resolveIncidentUseCase.execute(id, request.rootCause(), request.resolution()));
+	}
+
+	@PostMapping("/{id}/notes")
+	@Operation(summary = "Add an investigation note to a Java incident")
+	public IncidentResponse addNote(@PathVariable String id, @Valid @RequestBody AddIncidentNoteRequest request) {
+		return mapper.toResponse(addIncidentNoteUseCase.execute(id, request.author(), request.message()));
 	}
 }

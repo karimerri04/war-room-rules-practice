@@ -2,6 +2,7 @@ package com.karimerri.warroom.javaincident.api.rest;
 
 import com.karimerri.warroom.javaincident.api.error.GlobalExceptionHandler;
 import com.karimerri.warroom.javaincident.api.mapper.IncidentMapper;
+import com.karimerri.warroom.javaincident.application.usecase.AddIncidentNoteUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.FindAllIncidentsUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.FindIncidentByIdUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.GetIncidentStatsUseCase;
@@ -21,13 +22,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = IncidentController.class)
 @Import({ IncidentMapper.class, GlobalExceptionHandler.class, FindAllIncidentsUseCase.class,
 		FindIncidentByIdUseCase.class, ResolveIncidentUseCase.class, GetIncidentStatsUseCase.class,
-		StartIncidentInvestigationUseCase.class,
-		InMemoryIncidentRepository.class })
+		StartIncidentInvestigationUseCase.class, AddIncidentNoteUseCase.class, InMemoryIncidentRepository.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class IncidentControllerMockMvcTest {
 
@@ -54,7 +55,8 @@ class IncidentControllerMockMvcTest {
 				.andExpect(jsonPath("$.severity").value("HIGH")).andExpect(jsonPath("$.status").value("OPEN"))
 				.andExpect(jsonPath("$.symptoms", hasSize(3))).andExpect(jsonPath("$.rootCause").value(""))
 				.andExpect(jsonPath("$.resolution").value("")).andExpect(jsonPath("$.createdAt", notNullValue()))
-				.andExpect(jsonPath("$.resolvedAt").isEmpty());
+				.andExpect(jsonPath("$.resolvedAt").isEmpty()).andExpect(jsonPath("$.notes", hasSize(0)));
+
 	}
 
 	@Test
@@ -84,7 +86,7 @@ class IncidentControllerMockMvcTest {
 				.andExpect(jsonPath("$.rootCause").value("The repository did not represent absence explicitly."))
 				.andExpect(jsonPath("$.resolution").value(
 						"Use Optional in the repository contract and translate missing incidents to a 404 response."))
-				.andExpect(jsonPath("$.resolvedAt", notNullValue()));
+				.andExpect(jsonPath("$.resolvedAt", notNullValue())).andExpect(jsonPath("$.notes", hasSize(0)));
 	}
 
 	@Test
@@ -141,47 +143,97 @@ class IncidentControllerMockMvcTest {
 				.andExpect(jsonPath("$.critical").value(0)).andExpect(jsonPath("$.high").value(1))
 				.andExpect(jsonPath("$.medium").value(2)).andExpect(jsonPath("$.low").value(0));
 	}
-	
+
 	@Test
 	@DisplayName("PATCH /api/java-incidents/{id}/start-investigation should move incident to investigating")
 	void shouldStartIncidentInvestigation() throws Exception {
-	    mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/start-investigation"))
-	            .andExpect(status().isOk())
-	            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-	            .andExpect(jsonPath("$.id").value("JAVA-INC-001"))
-	            .andExpect(jsonPath("$.status").value("INVESTIGATING"))
-	            .andExpect(jsonPath("$.resolvedAt").isEmpty());
+		mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/start-investigation")).andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.id").value("JAVA-INC-001"))
+				.andExpect(jsonPath("$.status").value("INVESTIGATING")).andExpect(jsonPath("$.resolvedAt").isEmpty())
+				.andExpect(jsonPath("$.notes", hasSize(0)));
+		;
 	}
-	
+
 	@Test
 	@DisplayName("PATCH /api/java-incidents/{id}/start-investigation should return 404 when incident does not exist")
 	void shouldReturnNotFoundWhenStartingInvestigationForUnknownIncident() throws Exception {
-	    mockMvc.perform(patch("/api/java-incidents/UNKNOWN/start-investigation"))
-	            .andExpect(status().isNotFound())
-	            .andExpect(jsonPath("$.status").value(404))
-	            .andExpect(jsonPath("$.error").value("Not Found"))
-	            .andExpect(jsonPath("$.messages[0]").value("Incident not found: UNKNOWN"));
+		mockMvc.perform(patch("/api/java-incidents/UNKNOWN/start-investigation")).andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.status").value(404)).andExpect(jsonPath("$.error").value("Not Found"))
+				.andExpect(jsonPath("$.messages[0]").value("Incident not found: UNKNOWN"));
 	}
-	
+
 	@Test
 	@DisplayName("PATCH /api/java-incidents/{id}/start-investigation should return 400 when incident is already resolved")
 	void shouldReturnBadRequestWhenStartingInvestigationForResolvedIncident() throws Exception {
-	    String resolveBody = """
-	            {
-	              "rootCause": "Root cause",
-	              "resolution": "Resolution"
-	            }
-	            """;
+		String resolveBody = """
+				{
+				  "rootCause": "Root cause",
+				  "resolution": "Resolution"
+				}
+				""";
 
-	    mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/resolve")
-	                    .contentType(MediaType.APPLICATION_JSON)
-	                    .content(resolveBody))
-	            .andExpect(status().isOk());
+		mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/resolve").contentType(MediaType.APPLICATION_JSON)
+				.content(resolveBody)).andExpect(status().isOk());
 
-	    mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/start-investigation"))
-	            .andExpect(status().isBadRequest())
-	            .andExpect(jsonPath("$.status").value(400))
-	            .andExpect(jsonPath("$.error").value("Bad Request"))
-	            .andExpect(jsonPath("$.messages[0]").value("Only an open incident can move to investigation"));
+		mockMvc.perform(patch("/api/java-incidents/JAVA-INC-001/start-investigation"))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.error").value("Bad Request"))
+				.andExpect(jsonPath("$.messages[0]").value("Only an open incident can move to investigation"));
+	}
+
+	@Test
+	@DisplayName("POST /api/java-incidents/{id}/notes should add an investigation note")
+	void shouldAddNoteToIncident() throws Exception {
+		String requestBody = """
+				{
+				  "author": "Karim",
+				  "message": "Checked repository contract and found missing Optional handling."
+				}
+				""";
+
+		mockMvc.perform(post("/api/java-incidents/JAVA-INC-001/notes").contentType(MediaType.APPLICATION_JSON)
+				.content(requestBody)).andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.id").value("JAVA-INC-001")).andExpect(jsonPath("$.notes", hasSize(1)))
+				.andExpect(jsonPath("$.notes[0].author").value("Karim"))
+				.andExpect(jsonPath("$.notes[0].message")
+						.value("Checked repository contract and found missing Optional handling."))
+				.andExpect(jsonPath("$.notes[0].createdAt", notNullValue()));
+	}
+
+	@Test
+	@DisplayName("POST /api/java-incidents/{id}/notes should return 400 when body is invalid")
+	void shouldReturnBadRequestWhenNoteBodyIsInvalid() throws Exception {
+		String requestBody = """
+				{
+				  "author": "",
+				  "message": ""
+				}
+				""";
+
+		mockMvc.perform(post("/api/java-incidents/JAVA-INC-001/notes").contentType(MediaType.APPLICATION_JSON)
+				.content(requestBody)).andExpect(status().isBadRequest())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.status").value(400)).andExpect(jsonPath("$.error").value("Validation Error"))
+				.andExpect(jsonPath("$.messages", hasSize(2)))
+				.andExpect(jsonPath("$.path").value("/api/java-incidents/JAVA-INC-001/notes"));
+	}
+
+	@Test
+	@DisplayName("POST /api/java-incidents/{id}/notes should return 404 when incident does not exist")
+	void shouldReturnNotFoundWhenAddingNoteToUnknownIncident() throws Exception {
+		String requestBody = """
+				{
+				  "author": "Karim",
+				  "message": "Trying to add a note to an unknown incident."
+				}
+				""";
+
+		mockMvc.perform(
+				post("/api/java-incidents/UNKNOWN/notes").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value(404))
+				.andExpect(jsonPath("$.error").value("Not Found"))
+				.andExpect(jsonPath("$.messages[0]").value("Incident not found: UNKNOWN"));
 	}
 }
