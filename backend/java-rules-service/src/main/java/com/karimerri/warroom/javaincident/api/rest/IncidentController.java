@@ -8,6 +8,8 @@ import com.karimerri.warroom.javaincident.application.usecase.FindAllIncidentsUs
 import com.karimerri.warroom.javaincident.application.usecase.FindIncidentByIdUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.GetIncidentStatsUseCase;
 import com.karimerri.warroom.javaincident.application.usecase.ResolveIncidentUseCase;
+import com.karimerri.warroom.javaincident.application.usecase.StartIncidentInvestigationUseCase;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,6 +29,7 @@ public class IncidentController {
 	private final FindIncidentByIdUseCase findIncidentByIdUseCase;
 	private final ResolveIncidentUseCase resolveIncidentUseCase;
 	private final GetIncidentStatsUseCase getIncidentStatsUseCase;
+	private final StartIncidentInvestigationUseCase startIncidentInvestigationUseCase;
 	private final IncidentMapper mapper;
 
 	@GetMapping
@@ -45,6 +48,12 @@ public class IncidentController {
 	@Operation(summary = "Find a Java incident by id")
 	public IncidentResponse findById(@PathVariable String id) {
 		return mapper.toResponse(findIncidentByIdUseCase.execute(id));
+	}
+	
+	@PatchMapping("/{id}/start-investigation")
+	@Operation(summary = "Start investigation for a Java incident")
+	public IncidentResponse startInvestigation(@PathVariable String id) {
+	    return mapper.toResponse(startIncidentInvestigationUseCase.execute(id));
 	}
 
 	@PatchMapping("/{id}/resolve")
