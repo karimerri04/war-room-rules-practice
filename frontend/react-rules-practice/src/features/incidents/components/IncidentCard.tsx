@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { Link } from 'react-router-dom'
 import './IncidentCard.css'
 import type { Incident } from '../types/incidentTypes'
 
@@ -17,6 +18,10 @@ function IncidentCardComponent({ incident }: IncidentCardProps) {
             <strong>ID:</strong> {incident.id}
           </p>
         </div>
+
+        <Link className="incident-card-link" to={`/incidents/${incident.id}`}>
+          View details
+        </Link>
       </div>
 
       <div className="incident-badges">
