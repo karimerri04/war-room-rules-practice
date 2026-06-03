@@ -3,4 +3,4 @@ server:
 
 spring:
   application:
-    name: java-rules-service
+    name: java-incident-service

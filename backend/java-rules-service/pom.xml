@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.karimerri.warroom</groupId>
-	<artifactId>java-rules-service</artifactId>
+	<artifactId>java-incident-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
