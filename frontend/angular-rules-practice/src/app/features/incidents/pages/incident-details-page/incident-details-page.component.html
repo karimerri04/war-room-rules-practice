@@ -1,0 +1,189 @@
+@if (incident$ | async) {}
+
+@if (loading()) {
+  <p>Loading incident...</p>
+} @else if (error()) {
+  <main class="incident-details-page">
+    <a routerLink="/incidents" class="back-link">← Back to dashboard</a>
+
+    <section class="details-error" role="alert">
+      <p class="section-eyebrow">Loading error</p>
+      <h1>Unable to load incident</h1>
+      <p>{{ error() }}</p>
+    </section>
+  </main>
+} @else if (incident(); as selectedIncident) {
+  <main class="incident-details-page">
+    <a routerLink="/incidents" class="back-link">← Back to dashboard</a>
+
+    <section class="details-hero">
+      <div class="details-hero__content">
+        <p class="section-eyebrow">Incident details</p>
+        <h1>{{ selectedIncident.title }}</h1>
+        <p class="details-description">{{ selectedIncident.description }}</p>
+
+        <dl class="incident-meta-grid">
+          <div>
+            <dt>Incident ID</dt>
+            <dd>{{ selectedIncident.id }}</dd>
+          </div>
+
+          <div>
+            <dt>Created at</dt>
+            <dd>{{ selectedIncident.createdAt }}</dd>
+          </div>
+
+          <div>
+            <dt>Resolved at</dt>
+            <dd>{{ selectedIncident.resolvedAt ?? 'Not resolved yet' }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="details-hero__side">
+        <app-status-badge [status]="selectedIncident.status" />
+        <app-severity-badge [severity]="selectedIncident.severity" />
+      </div>
+    </section>
+
+    <section class="details-section">
+      <div class="details-section__header">
+        <div>
+          <p class="section-eyebrow">Signals</p>
+          <h2>Symptoms</h2>
+        </div>
+
+        <span class="section-counter">{{ selectedIncident.symptoms.length }}</span>
+      </div>
+
+      <ul class="symptoms-list">
+        @for (symptom of selectedIncident.symptoms; track symptom) {
+          <li>{{ symptom }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="details-section">
+      <div class="details-section__header">
+        <div>
+          <p class="section-eyebrow">Workflow</p>
+          <h2>Actions</h2>
+        </div>
+      </div>
+
+      <div class="action-panel">
+        <div>
+          <h3>Start investigation</h3>
+          <p>
+            Move the incident from open state to investigation state so the team can begin
+            diagnosis.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          [disabled]="!canStartInvestigation || actionLoading()"
+          (click)="startInvestigation()"
+        >
+          Start investigation
+        </button>
+      </div>
+    </section>
+
+    <section class="details-section">
+      <div class="details-section__header">
+        <div>
+          <p class="section-eyebrow">Collaboration</p>
+          <h2>Investigation notes</h2>
+        </div>
+
+        <span class="section-counter">{{ selectedIncident.notes.length }}</span>
+      </div>
+
+      @if (selectedIncident.notes.length === 0) {
+        <p class="empty-state">No notes yet.</p>
+      } @else {
+        <ul class="notes-list">
+          @for (note of selectedIncident.notes; track note.author + note.createdAt) {
+            <li>
+              <div class="note-header">
+                <strong>{{ note.author }}</strong>
+                <small>{{ note.createdAt }}</small>
+              </div>
+              <p>{{ note.message }}</p>
+            </li>
+          }
+        </ul>
+      }
+
+      <form class="details-form" [formGroup]="noteForm" (ngSubmit)="addNote()">
+        <label for="note-author">Author</label>
+        <input id="note-author" formControlName="author" />
+
+        <label for="note-message">Message</label>
+        <textarea
+          id="note-message"
+          formControlName="message"
+          rows="3"
+          placeholder="Describe the investigation step, hypothesis, or finding..."
+        ></textarea>
+
+        <button type="submit" [disabled]="actionLoading()">Add note</button>
+      </form>
+    </section>
+
+    <section class="details-section">
+      <div class="details-section__header">
+        <div>
+          <p class="section-eyebrow">Closure</p>
+          <h2>Resolution</h2>
+        </div>
+      </div>
+
+      @if (selectedIncident.status === 'RESOLVED') {
+        <div class="resolution-summary">
+          <div>
+            <h3>Root cause</h3>
+            <p>{{ selectedIncident.rootCause }}</p>
+          </div>
+
+          <div>
+            <h3>Resolution</h3>
+            <p>{{ selectedIncident.resolution }}</p>
+          </div>
+
+          <div>
+            <h3>Resolved at</h3>
+            <p>{{ selectedIncident.resolvedAt }}</p>
+          </div>
+        </div>
+      } @else {
+        <form class="details-form" [formGroup]="resolveForm" (ngSubmit)="resolveIncident()">
+          <label for="root-cause">Root cause</label>
+          <textarea
+            id="root-cause"
+            formControlName="rootCause"
+            rows="3"
+            placeholder="Explain the technical cause of the incident..."
+          ></textarea>
+
+          <label for="resolution">Resolution</label>
+          <textarea
+            id="resolution"
+            formControlName="resolution"
+            rows="3"
+            placeholder="Explain what was done to resolve the incident..."
+          ></textarea>
+
+          <button type="submit" [disabled]="!canResolve || actionLoading()">
+            Resolve incident
+          </button>
+        </form>
+      }
+    </section>
+
+    <p class="details-notification" aria-live="polite">
+      {{ notification() }}
+    </p>
+  </main>
+}
