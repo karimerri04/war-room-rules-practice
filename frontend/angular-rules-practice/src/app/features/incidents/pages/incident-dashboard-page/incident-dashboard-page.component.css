@@ -1,0 +1,91 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  padding: 28px;
+  border: 1px solid #dbe3ef;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: #172033;
+}
+
+.dashboard-header p {
+  margin: 8px 0 0;
+  color: #64748b;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.stats-grid article,
+.incident-card {
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.stats-grid article {
+  padding: 18px;
+}
+
+.stats-grid span {
+  display: block;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.stats-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: #172033;
+  font-size: 2rem;
+}
+
+.incident-list {
+  display: grid;
+  gap: 16px;
+}
+
+.incident-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px;
+}
+
+.incident-card h2 {
+  margin: 0;
+  color: #172033;
+}
+
+.incident-card p {
+  margin: 8px 0 0;
+  color: #64748b;
+}
+
+.incident-meta {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.incident-meta span {
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 800;
+}

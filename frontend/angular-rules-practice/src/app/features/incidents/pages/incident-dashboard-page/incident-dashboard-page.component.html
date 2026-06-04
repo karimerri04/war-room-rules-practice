@@ -1,0 +1,48 @@
+@if (vm$ | async; as vm) {
+  <main class="dashboard-page">
+    <header class="dashboard-header">
+      <h1>War Room Incident Dashboard</h1>
+      <p>Diagnose, investigate and resolve technical incidents with Angular.</p>
+    </header>
+
+    <section class="stats-grid" aria-label="Incident statistics">
+      <article>
+        <span>Total</span>
+        <strong>{{ vm.stats.total }}</strong>
+      </article>
+
+      <article>
+        <span>Open</span>
+        <strong>{{ vm.stats.open }}</strong>
+      </article>
+
+      <article>
+        <span>Investigating</span>
+        <strong>{{ vm.stats.investigating }}</strong>
+      </article>
+
+      <article>
+        <span>Resolved</span>
+        <strong>{{ vm.stats.resolved }}</strong>
+      </article>
+    </section>
+
+    <section class="incident-list">
+      @for (incident of vm.incidents; track incident.id) {
+        <article class="incident-card">
+          <div>
+            <h2>{{ incident.title }}</h2>
+            <p>{{ incident.description }}</p>
+          </div>
+
+          <div class="incident-meta">
+            <span>{{ incident.status }}</span>
+            <span>{{ incident.severity }}</span>
+          </div>
+        </article>
+      }
+    </section>
+  </main>
+} @else {
+  <p>Loading incidents...</p>
+}
