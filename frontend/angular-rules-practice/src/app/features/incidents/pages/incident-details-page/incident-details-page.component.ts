@@ -8,6 +8,12 @@ import type { Incident } from '../../models/incident.model'
 import { SeverityBadgeComponent } from '../../ui/severity-badge/severity-badge.component'
 import { StatusBadgeComponent } from '../../ui/status-badge/status-badge.component'
 
+/**
+ * Smart page component for incident investigation workflow.
+ *
+ * It owns the selected incident state, loads data from the route parameter,
+ * and coordinates mutations such as starting investigation, adding notes and resolving.
+ */
 @Component({
   selector: 'app-incident-details-page',
   imports: [
@@ -31,16 +37,32 @@ export class IncidentDetailsPageComponent {
   readonly error = signal<string | null>(null)
   readonly notification = signal<string | null>(null)
 
+  /**
+ * Reactive form used for collaboration notes.
+ *
+ * The form keeps validation explicit and avoids manually reading DOM values.
+ */
   readonly noteForm = this.formBuilder.nonNullable.group({
     author: ['Karim', Validators.required],
     message: ['', Validators.required],
   })
 
+  /**
+ * Reactive form used to close an incident.
+ *
+ * Both root cause and resolution are required before calling the backend.
+ */
   readonly resolveForm = this.formBuilder.nonNullable.group({
     rootCause: ['', Validators.required],
     resolution: ['', Validators.required],
   })
 
+  /**
+ * Route-driven loading stream.
+ *
+ * The async pipe subscribes to this stream from the template, which triggers the
+ * initial incident loading and keeps loading/error state synchronized.
+ */
   readonly incident$ = this.route.paramMap.pipe(
     tap(() => {
       this.loading.set(true)

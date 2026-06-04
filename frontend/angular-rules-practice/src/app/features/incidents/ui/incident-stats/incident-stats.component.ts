@@ -2,6 +2,12 @@ import { Component, input, output } from '@angular/core'
 import type { IncidentStats } from '../../models/incident.model'
 import type { StatFilter } from '../../models/incident-filter.model'
 
+/**
+ * Presentational component for incident statistics.
+ *
+ * It does not own dashboard state. It emits a filter intent and lets the parent
+ * decide how this intent should affect the selected filters.
+ */
 type StatItem = {
   label: string
   value: number
@@ -17,6 +23,9 @@ export class IncidentStatsComponent {
   readonly stats = input.required<IncidentStats>()
   readonly statClick = output<StatFilter>()
 
+  /**
+ * Maps backend statistics to clickable UI cards.
+ */
   get items(): StatItem[] {
     const stats = this.stats()
 

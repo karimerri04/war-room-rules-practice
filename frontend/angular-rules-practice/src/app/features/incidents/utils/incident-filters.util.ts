@@ -2,7 +2,10 @@ import type { Incident } from '../models/incident.model'
 import type { SeverityFilter, StatusFilter } from '../models/incident-filter.model'
 
 /**
- * Derives the visible incident list from the full incident collection and the selected filters.
+ * Derives the visible incident list from the complete incident collection.
+ *
+ * The dashboard owns the selected filters, while this utility keeps the filtering
+ * rule pure, reusable and easy to test.
  */
 export function filterIncidents(
   incidents: Incident[],

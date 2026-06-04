@@ -9,6 +9,12 @@ import {
   ResolveIncidentRequest,
 } from '../models/incident.model'
 
+/**
+ * API boundary for the incident feature.
+ *
+ * Components depend on this service instead of calling backend endpoints directly.
+ * This keeps HTTP details centralized and makes the UI easier to test and refactor.
+ */
 @Injectable({
   providedIn: 'root',
 })

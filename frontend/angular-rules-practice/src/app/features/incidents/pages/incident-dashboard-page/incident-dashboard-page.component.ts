@@ -12,6 +12,15 @@ import { IncidentListComponent } from '../../ui/incident-list/incident-list.comp
 import { IncidentStatsComponent } from '../../ui/incident-stats/incident-stats.component'
 import { filterIncidents } from '../../utils/incident-filters.util'
 
+/**
+ * Smart page component for the incident dashboard.
+ *
+ * Responsibilities:
+ * - load incidents and statistics through the data-access service
+ * - own local dashboard filter state with signals
+ * - derive the visible incident list
+ * - coordinate child UI components through inputs and outputs
+ */
 @Component({
   selector: 'app-incident-dashboard-page',
   imports: [AsyncPipe, IncidentStatsComponent, IncidentFiltersComponent, IncidentListComponent],
@@ -27,6 +36,12 @@ export class IncidentDashboardPageComponent {
   readonly incidents$ = this.incidentService.findAll()
   readonly stats$ = this.incidentService.getStats()
 
+  /**
+ * View model consumed by the template.
+ *
+ * It combines backend data with the current signal-based filters to expose a
+ * single object to the HTML template.
+ */
   readonly vm$ = combineLatest({
     incidents: this.incidents$,
     stats: this.stats$,
@@ -54,10 +69,11 @@ export class IncidentDashboardPageComponent {
     this.selectedSeverity.set(severity)
   }
 
-  /**
-   * Statistic cards act as shortcuts for dashboard filters.
-   * Selecting one filter dimension resets the other dimension to keep the result explicit.
-   */
+/**
+ * Statistic cards act as shortcuts for dashboard filters.
+ *
+ * Selecting one filter dimension resets the other dimension to keep the result explicit.
+ */
   onStatClick(filter: StatFilter): void {
     if (filter.type === 'ALL') {
       this.selectedStatus.set('ALL')

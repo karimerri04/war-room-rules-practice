@@ -1,6 +1,12 @@
 import { Component, input, output } from '@angular/core'
 import type { SeverityFilter, StatusFilter } from '../../models/incident-filter.model'
 
+/**
+ * Controlled filter component.
+ *
+ * The selected values come from the parent page, and changes are emitted upward.
+ * This keeps the dashboard as the single owner of filter state.
+ */
 @Component({
   selector: 'app-incident-filters',
   templateUrl: './incident-filters.component.html',
