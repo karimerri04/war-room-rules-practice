@@ -6,6 +6,10 @@ import type {
   ResolveIncidentRequest,
 } from '../types/incidentTypes'
 
+/**
+ * API boundary for the incident feature.
+ * Keeping HTTP calls here prevents UI components from depending directly on endpoint details.
+ */
 async function requestJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     headers: {

@@ -5,6 +5,10 @@ import type {
   IncidentStatus,
 } from '../types/incidentTypes'
 
+/**
+ * Represents the filter intent emitted by a statistic card.
+ * The parent dashboard decides how this intent updates the actual filter state.
+ */
 type StatFilter =
   | { type: 'ALL' }
   | { type: 'STATUS'; value: IncidentStatus }

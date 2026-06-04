@@ -10,6 +10,10 @@ type UseIncidentsResult = {
   reload: () => Promise<void>
 }
 
+/**
+ * Centralizes incident loading logic for the dashboard.
+ * Components consume a simple state contract instead of managing API calls directly.
+ */
 export function useIncidents(): UseIncidentsResult {
   const [incidents, setIncidents] = useState<Incident[]>([])
   const [stats, setStats] = useState<IncidentStats | null>(null)

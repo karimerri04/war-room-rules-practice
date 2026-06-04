@@ -13,6 +13,11 @@ type StatFilter =
   | { type: 'STATUS'; value: IncidentStatus }
   | { type: 'SEVERITY'; value: IncidentSeverity }
 
+/**
+* Keeps filtering logic outside the component body to make it easy to test,
+* read and reuse. The dashboard owns the filter state and derives the visible
+* incidents from the full incident list.
+*/
 function filterIncidents(
   incidents: Incident[],
   selectedStatus: StatusFilter,
@@ -32,6 +37,11 @@ export function IncidentDashboardPage() {
   const [selectedStatus, setSelectedStatus] = useState<StatusFilter>('ALL')
   const [selectedSeverity, setSelectedSeverity] = useState<SeverityFilter>('ALL')
 
+  /**
+ * Statistic cards act as shortcuts for dashboard filters.
+ * Clicking a status resets the severity filter, and clicking a severity resets
+ * the status filter, so the resulting view stays explicit and predictable.
+ */
   const handleStatClick = useCallback((filter: StatFilter) => {
     if (filter.type === 'ALL') {
       setSelectedStatus('ALL')
