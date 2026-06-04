@@ -1,0 +1,25 @@
+<article class="incident-card">
+  <div class="incident-card__header">
+    <div>
+      <h2>{{ incident().title }}</h2>
+      <p class="incident-card__id">{{ incident().id }}</p>
+    </div>
+
+    <div class="incident-card__badges">
+      <app-status-badge [status]="incident().status" />
+      <app-severity-badge [severity]="incident().severity" />
+    </div>
+  </div>
+
+  <p class="incident-card__description">
+    {{ incident().description }}
+  </p>
+
+  <div class="incident-card__footer">
+    <span>Notes: {{ incident().notes.length }}</span>
+
+    <a [routerLink]="['/incidents', incident().id]" class="incident-card__link">
+      Open incident
+    </a>
+  </div>
+</article>

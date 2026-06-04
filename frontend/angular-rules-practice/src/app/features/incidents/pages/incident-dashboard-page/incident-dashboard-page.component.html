@@ -27,21 +27,11 @@
       </article>
     </section>
 
-    <section class="incident-list">
-      @for (incident of vm.incidents; track incident.id) {
-        <article class="incident-card">
-          <div>
-            <h2>{{ incident.title }}</h2>
-            <p>{{ incident.description }}</p>
-          </div>
-
-          <div class="incident-meta">
-            <span>{{ incident.status }}</span>
-            <span>{{ incident.severity }}</span>
-          </div>
-        </article>
-      }
-    </section>
+  <section class="incident-list">
+  @for (incident of vm.incidents; track incident.id) {
+    <app-incident-card [incident]="incident" />
+  }
+</section>
   </main>
 } @else {
   <p>Loading incidents...</p>
