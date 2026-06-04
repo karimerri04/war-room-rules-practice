@@ -102,6 +102,13 @@
   color: var(--color-muted);
 }
 
+.incident-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .incident-card-link {
   padding: 9px 14px;
   border-radius: 10px;

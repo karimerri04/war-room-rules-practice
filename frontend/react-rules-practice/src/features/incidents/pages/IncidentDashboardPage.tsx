@@ -1,12 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { IncidentFilters } from '../components/IncidentFilters'
 import { IncidentList } from '../components/IncidentList'
 import { IncidentStats } from '../components/IncidentStats'
 import { useIncidents } from '../hooks/useIncidents'
-import type { Incident } from '../types/incidentTypes'
+import type { Incident, IncidentSeverity, IncidentStatus } from '../types/incidentTypes'
 import { Loading } from '../../../shared/components/Loading'
 import type { SeverityFilter, StatusFilter } from '../components/IncidentFilters'
 import './IncidentDashboardPage.css'
+
+type StatFilter =
+  | { type: 'ALL' }
+  | { type: 'STATUS'; value: IncidentStatus }
+  | { type: 'SEVERITY'; value: IncidentSeverity }
 
 function filterIncidents(
   incidents: Incident[],
@@ -26,6 +31,23 @@ export function IncidentDashboardPage() {
 
   const [selectedStatus, setSelectedStatus] = useState<StatusFilter>('ALL')
   const [selectedSeverity, setSelectedSeverity] = useState<SeverityFilter>('ALL')
+
+  const handleStatClick = useCallback((filter: StatFilter) => {
+    if (filter.type === 'ALL') {
+      setSelectedStatus('ALL')
+      setSelectedSeverity('ALL')
+      return
+    }
+
+    if (filter.type === 'STATUS') {
+      setSelectedStatus(filter.value)
+      setSelectedSeverity('ALL')
+      return
+    }
+
+    setSelectedSeverity(filter.value)
+    setSelectedStatus('ALL')
+  }, [])
 
   const filteredIncidents = useMemo(
     () => filterIncidents(incidents, selectedStatus, selectedSeverity),
@@ -58,7 +80,7 @@ export function IncidentDashboardPage() {
       </header>
 
       <div className="dashboard-content">
-        <IncidentStats stats={stats} />
+        <IncidentStats stats={stats} onStatClick={handleStatClick} />
 
         <IncidentFilters
           selectedStatus={selectedStatus}

@@ -1,4 +1,5 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import type { SyntheticEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   addIncidentNote,
@@ -61,7 +62,7 @@ export function IncidentDetailsPage() {
   }, [incident])
 
   const handleAddNote = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
+    async (event: SyntheticEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       if (!incident) return
@@ -88,7 +89,7 @@ export function IncidentDetailsPage() {
   )
 
   const handleResolve = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
+    async (event: SyntheticEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       if (!incident) return
