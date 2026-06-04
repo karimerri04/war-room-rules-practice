@@ -1,0 +1,9 @@
+<section class="incident-list" aria-label="Incident list">
+  @if (incidents().length === 0) {
+    <p class="empty-state">No incidents match the selected filters.</p>
+  } @else {
+    @for (incident of incidents(); track incident.id) {
+      <app-incident-card [incident]="incident" />
+    }
+  }
+</section>

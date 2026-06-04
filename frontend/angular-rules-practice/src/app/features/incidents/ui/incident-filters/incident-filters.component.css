@@ -1,0 +1,35 @@
+.incident-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.incident-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.incident-filter-field label {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.incident-filter-field select {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: white;
+  color: var(--color-text);
+}
+
+.incident-filter-field select:focus {
+  border-color: var(--color-primary);
+  outline: 3px solid rgba(29, 78, 216, 0.12);
+}

@@ -5,33 +5,20 @@
       <p>Diagnose, investigate and resolve technical incidents with Angular.</p>
     </header>
 
-    <section class="stats-grid" aria-label="Incident statistics">
-      <article>
-        <span>Total</span>
-        <strong>{{ vm.stats.total }}</strong>
-      </article>
+    <app-incident-stats [stats]="vm.stats" (statClick)="onStatClick($event)" />
 
-      <article>
-        <span>Open</span>
-        <strong>{{ vm.stats.open }}</strong>
-      </article>
+    <app-incident-filters
+      [selectedStatus]="selectedStatus()"
+      [selectedSeverity]="selectedSeverity()"
+      (statusChange)="onStatusChange($event)"
+      (severityChange)="onSeverityChange($event)"
+    />
 
-      <article>
-        <span>Investigating</span>
-        <strong>{{ vm.stats.investigating }}</strong>
-      </article>
+    <p class="dashboard-count">
+      Showing {{ vm.filteredIncidents.length }} of {{ vm.incidents.length }} incidents.
+    </p>
 
-      <article>
-        <span>Resolved</span>
-        <strong>{{ vm.stats.resolved }}</strong>
-      </article>
-    </section>
-
-  <section class="incident-list">
-  @for (incident of vm.incidents; track incident.id) {
-    <app-incident-card [incident]="incident" />
-  }
-</section>
+    <app-incident-list [incidents]="vm.filteredIncidents" />
   </main>
 } @else {
   <p>Loading incidents...</p>

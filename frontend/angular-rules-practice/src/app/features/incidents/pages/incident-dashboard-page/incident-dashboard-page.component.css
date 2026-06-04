@@ -22,46 +22,8 @@
   color: var(--color-muted);
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.stats-grid article {
-  padding: 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
-}
-
-.stats-grid span {
-  display: block;
+.dashboard-count {
+  margin: 0;
   color: var(--color-muted);
-  font-weight: 700;
-}
-
-.stats-grid strong {
-  display: block;
-  margin-top: 6px;
-  color: var(--color-text);
-  font-size: 2rem;
-}
-
-.incident-list {
-  display: grid;
-  gap: 16px;
-}
-
-@media (max-width: 900px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
+  font-weight: 800;
 }

@@ -1,0 +1,30 @@
+<section class="incident-filters" aria-label="Incident filters">
+  <div class="incident-filter-field">
+    <label for="status-filter">Status</label>
+    <select
+      id="status-filter"
+      [value]="selectedStatus()"
+      (change)="onStatusChange($any($event.target).value)"
+    >
+      <option value="ALL">All</option>
+      <option value="OPEN">Open</option>
+      <option value="INVESTIGATING">Investigating</option>
+      <option value="RESOLVED">Resolved</option>
+    </select>
+  </div>
+
+  <div class="incident-filter-field">
+    <label for="severity-filter">Severity</label>
+    <select
+      id="severity-filter"
+      [value]="selectedSeverity()"
+      (change)="onSeverityChange($any($event.target).value)"
+    >
+      <option value="ALL">All</option>
+      <option value="LOW">Low</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="HIGH">High</option>
+      <option value="CRITICAL">Critical</option>
+    </select>
+  </div>
+</section>
