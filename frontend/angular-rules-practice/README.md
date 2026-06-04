@@ -1,59 +1,334 @@
-# AngularRulesPractice
+# Angular Rules Practice - War Room Incident Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.14.
+This frontend is part of the `war-room-rules-practice` project.
 
-## Development server
+The goal is not to display isolated Angular rules as a quiz, but to apply Angular, TypeScript and frontend architecture rules in a realistic incident resolution dashboard.
 
-To start a local development server, run:
+## Stack
 
-```bash
-ng serve
+* Angular
+* TypeScript
+* Angular Router
+* HttpClient
+* RxJS
+* Signals
+* Reactive Forms
+* CSS by feature
+* Vitest / Angular test runner
+
+## Features
+
+The application provides a dashboard for technical incident resolution.
+
+Current capabilities:
+
+* Display incident statistics
+* Filter incidents by status
+* Filter incidents by severity
+* Click statistic cards to update dashboard filters
+* Display incident cards
+* Navigate to an incident details page
+* Start investigation
+* Add investigation notes
+* Resolve an incident
+* Display status and severity badges
+* Handle loading and error states
+* Use reactive forms for incident notes and resolution
+
+## Routes
+
+| Route            | Description               |
+| ---------------- | ------------------------- |
+| `/`              | Redirects to `/incidents` |
+| `/incidents`     | Incident dashboard        |
+| `/incidents/:id` | Incident details page     |
+
+## Project structure
+
+```txt
+src/app/
+├── app.component.ts
+├── app.component.html
+├── app.component.css
+├── app.config.ts
+├── app.routes.ts
+├── core/
+│   └── config/
+│       └── api.config.ts
+└── features/
+    └── incidents/
+        ├── data-access/
+        │   └── incident.service.ts
+        ├── models/
+        │   ├── incident.model.ts
+        │   └── incident-filter.model.ts
+        ├── pages/
+        │   ├── incident-dashboard-page/
+        │   └── incident-details-page/
+        ├── ui/
+        │   ├── incident-card/
+        │   ├── incident-filters/
+        │   ├── incident-list/
+        │   ├── incident-stats/
+        │   ├── severity-badge/
+        │   └── status-badge/
+        └── utils/
+            └── incident-filters.util.ts
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Angular rules practiced
 
-## Code scaffolding
+### Standalone components
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The application uses standalone components instead of NgModules.
 
-```bash
-ng generate component component-name
+Examples:
+
+* `IncidentDashboardPageComponent`
+* `IncidentDetailsPageComponent`
+* `IncidentCardComponent`
+* `IncidentStatsComponent`
+* `IncidentFiltersComponent`
+* `IncidentListComponent`
+* `StatusBadgeComponent`
+* `SeverityBadgeComponent`
+
+Each component declares its own imports.
+
+### Feature-based architecture
+
+The incident domain is isolated under:
+
+```txt
+features/incidents/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The feature contains:
 
-```bash
-ng generate --help
+* data access
+* models
+* pages
+* UI components
+* utilities
+
+This keeps the application modular and easier to extend.
+
+### Service-based API access
+
+HTTP calls are isolated in:
+
+```txt
+features/incidents/data-access/incident.service.ts
 ```
 
-## Building
+UI components do not call backend endpoints directly.
 
-To build the project run:
+The service exposes methods such as:
 
-```bash
-ng build
+```ts
+findAll()
+findById(id)
+getStats()
+startInvestigation(id)
+addNote(id, request)
+resolve(id, request)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### HttpClient with provider configuration
 
-## Running unit tests
+`HttpClient` is configured once in:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```txt
+app.config.ts
 ```
 
-## Running end-to-end tests
+using:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```ts
+provideHttpClient()
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+This makes `HttpClient` injectable in Angular services.
 
-## Additional Resources
+### Signals for local UI state
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The dashboard and details page use signals for local UI state such as:
+
+* selected status
+* selected severity
+* selected incident
+* loading state
+* action loading state
+* notifications
+* errors
+
+Examples:
+
+```ts
+readonly selectedStatus = signal<StatusFilter>('ALL')
+readonly selectedSeverity = signal<SeverityFilter>('ALL')
+```
+
+### RxJS for async data loading
+
+The dashboard combines backend data streams with RxJS:
+
+```ts
+combineLatest({
+  incidents: this.incidents$,
+  stats: this.stats$,
+})
+```
+
+The details page uses route parameters and API loading with:
+
+```ts
+paramMap
+switchMap
+tap
+catchError
+```
+
+### Input and output communication
+
+Reusable UI components communicate with their parent through Angular inputs and outputs.
+
+Examples:
+
+```ts
+readonly stats = input.required<IncidentStats>()
+readonly statClick = output<StatFilter>()
+```
+
+This keeps components reusable and parent-driven.
+
+### Derived state through utilities
+
+Filtering logic is extracted to:
+
+```txt
+features/incidents/utils/incident-filters.util.ts
+```
+
+The dashboard derives the visible incident list from:
+
+* all incidents
+* selected status
+* selected severity
+
+This avoids duplicating filtered state.
+
+### Reactive forms
+
+The details page uses reactive forms for:
+
+* adding investigation notes
+* resolving incidents
+
+The forms use `FormBuilder`, validators and `markAllAsTouched()` to keep validation explicit.
+
+### Routing
+
+Angular Router defines:
+
+* dashboard route
+* details route
+* default redirect
+
+in:
+
+```txt
+app.routes.ts
+```
+
+### Accessibility
+
+The UI uses:
+
+* semantic page sections
+* labels for filters
+* buttons for clickable statistics
+* `aria-label` for statistics and filters
+* `aria-live` for action notifications
+* `role="list"` and `role="listitem"` where Angular control-flow blocks would otherwise conflict with HTML list validation
+
+## Tests
+
+The Angular frontend includes component tests for:
+
+* `AppComponent`
+* `StatusBadgeComponent`
+* `SeverityBadgeComponent`
+* `IncidentStatsComponent`
+* `IncidentFiltersComponent`
+* `IncidentCardComponent`
+
+The tests validate:
+
+* component creation
+* rendered labels
+* CSS class selection
+* input rendering
+* output events
+* router links
+
+## Commands
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start development server:
+
+```bash
+npm start
+```
+
+Run tests:
+
+```bash
+npm run test:run
+```
+
+Run build:
+
+```bash
+npm run build
+```
+
+## Backend dependency
+
+The Angular frontend expects the Java incident service to be running.
+
+Default API base URL is configured in:
+
+```txt
+src/app/core/config/api.config.ts
+```
+
+Backend Swagger is available at:
+
+```txt
+http://localhost:8081/swagger-ui/index.html
+```
+
+## Notes
+
+This Angular frontend intentionally implements the same incident-resolution domain as the React frontend, but using Angular idioms.
+
+The objective is to compare how the same business workflow can be implemented with:
+
+* React hooks and component composition
+* Angular standalone components, services, signals, RxJS and reactive forms
+
+## Next improvements
+
+Possible next steps:
+
+* Add tests for `IncidentDetailsPageComponent`
+* Add API mocking for Angular tests
+* Add route-level loading and error handling
+* Add optimistic UI updates
+* Add global project documentation under `/docs`
