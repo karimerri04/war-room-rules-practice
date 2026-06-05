@@ -19,9 +19,9 @@ def test_should_find_all_incidents() -> None:
             {
                 "id": "JAVA-INC-001",
                 "title": "NullPointerException when finding an unknown incident",
-               "description": (
-    "The API fails when an unknown incident id is requested."
-),
+                "description": (
+                    "The API fails when an unknown incident id is requested."
+                ),
                 "severity": "HIGH",
                 "status": "OPEN",
                 "symptoms": ["HTTP 500 returned instead of 404"],

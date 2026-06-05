@@ -30,11 +30,7 @@ class IncidentApiClient:
         if not isinstance(data, list):
             raise IncidentApiError("Expected a JSON array for incident list.")
 
-        return [
-            Incident.from_json(item)
-            for item in data
-            if isinstance(item, dict)
-        ]
+        return [Incident.from_json(item) for item in data if isinstance(item, dict)]
 
     def find_by_id(self, incident_id: str) -> Incident:
         """Return one incident by id."""
