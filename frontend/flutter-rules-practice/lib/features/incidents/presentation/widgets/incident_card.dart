@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/format_incident_date.dart';
 import '../../domain/incident.dart';
 import 'severity_badge.dart';
 import 'status_badge.dart';
@@ -19,6 +20,8 @@ class IncidentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final noteCount = incident.notes.length;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -31,19 +34,12 @@ class IncidentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  StatusBadge(status: incident.status),
-                  SeverityBadge(severity: incident.severity),
-                ],
-              ),
+              _IncidentCardHeader(incident: incident),
               const SizedBox(height: 12),
               Text(
                 incident.title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: 8),
@@ -54,23 +50,96 @@ class IncidentCard extends StatelessWidget {
               if (incident.symptoms.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
-                  'Symptoms',
+                  'Key symptoms',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 6),
-                ...incident.symptoms.map(
+                ...incident.symptoms.take(2).map(
                       (symptom) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: Text('• $symptom'),
                   ),
                 ),
+                if (incident.symptoms.length > 2)
+                  Text(
+                    '+${incident.symptoms.length - 2} more symptom(s)',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
               ],
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  _MetaChip(
+                    icon: Icons.schedule,
+                    label: formatIncidentDate(incident.createdAt),
+                  ),
+                  _MetaChip(
+                    icon: Icons.notes,
+                    label: '$noteCount note(s)',
+                  ),
+                  const _MetaChip(
+                    icon: Icons.arrow_forward,
+                    label: 'Open details',
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _IncidentCardHeader extends StatelessWidget {
+  final Incident incident;
+
+  const _IncidentCardHeader({
+    required this.incident,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          incident.id,
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        StatusBadge(status: incident.status),
+        SeverityBadge(severity: incident.severity),
+      ],
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _MetaChip({
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      avatar: Icon(
+        icon,
+        size: 16,
+      ),
+      label: Text(label),
+      visualDensity: VisualDensity.compact,
     );
   }
 }

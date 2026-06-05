@@ -8,7 +8,7 @@ import 'package:flutter_rules_practice/features/incidents/presentation/widgets/i
 
 void main() {
   group('IncidentCard', () {
-    testWidgets('should display incident summary', (tester) async {
+    testWidgets('should display polished incident summary', (tester) async {
       final router = _routerWithCard(_incident());
 
       await tester.pumpWidget(
@@ -17,9 +17,9 @@ void main() {
         ),
       );
 
+      expect(find.text('JAVA-INC-001'), findsOneWidget);
       expect(find.text('Open'), findsOneWidget);
       expect(find.text('High'), findsOneWidget);
-      expect(find.text('JAVA-INC-001'), findsNothing);
       expect(
         find.text('NullPointerException when finding an unknown incident'),
         findsOneWidget,
@@ -28,8 +28,11 @@ void main() {
         find.text('The API fails when an unknown incident id is requested.'),
         findsOneWidget,
       );
-      expect(find.text('Symptoms'), findsOneWidget);
+      expect(find.text('Key symptoms'), findsOneWidget);
       expect(find.text('• HTTP 500 returned instead of 404'), findsOneWidget);
+      expect(find.text('• Stack trace shows null access'), findsOneWidget);
+      expect(find.text('0 note(s)'), findsOneWidget);
+      expect(find.text('Open details'), findsOneWidget);
     });
 
     testWidgets('should navigate to incident details when tapped', (
