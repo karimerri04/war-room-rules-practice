@@ -6,6 +6,10 @@ import '../widgets/incident_card.dart';
 import '../widgets/incident_filters.dart';
 import '../widgets/incident_stats_cards.dart';
 
+/// Dashboard screen for incident monitoring and filtering.
+///
+/// This page does not fetch data directly. It reads state from
+/// [IncidentDashboardNotifier] and delegates user actions to it.
 class IncidentDashboardPage extends StatelessWidget {
   const IncidentDashboardPage({super.key});
 
@@ -31,6 +35,8 @@ class IncidentDashboardPage extends StatelessWidget {
   }
 }
 
+/// Renders the dashboard body according to the current async state:
+/// loading, error, empty or loaded content.
 class _DashboardBody extends StatelessWidget {
   final IncidentDashboardNotifier notifier;
 

@@ -7,6 +7,11 @@ import '../features/incidents/presentation/pages/incident_dashboard_page.dart';
 import '../features/incidents/presentation/pages/incident_details_page.dart';
 import '../features/incidents/presentation/state/incident_details_notifier.dart';
 
+/// Centralized application router.
+///
+/// Routes are declared here instead of being scattered across widgets.
+/// This keeps navigation explicit and prepares the app for deep-link-friendly
+/// routes such as `/incidents/:id`.
 final GoRouter appRouter = GoRouter(
   initialLocation: '/incidents',
   routes: [
@@ -31,6 +36,8 @@ final GoRouter appRouter = GoRouter(
           );
         }
 
+        // The details page owns its own notifier because it has its own
+        // loading, mutation and notification state.
         return ChangeNotifierProvider(
           create: (context) => IncidentDetailsNotifier(
             incidentApiService: context.read<IncidentApiService>(),

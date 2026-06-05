@@ -15,6 +15,10 @@ class Incident {
   final String? resolvedAt;
   final List<InvestigationNote> notes;
 
+  /// Incident domain model used by the Flutter frontend.
+  ///
+  /// This model mirrors the JSON contract returned by the Java backend.
+  /// Keep this file aligned with the backend response before changing widgets.
   const Incident({
     required this.id,
     required this.title,
@@ -29,6 +33,10 @@ class Incident {
     required this.notes,
   });
 
+  /// Creates an [Incident] from the backend JSON response.
+  ///
+  /// Optional backend arrays and text fields are normalized to safe defaults
+  /// so widgets do not need to handle missing keys repeatedly.
   factory Incident.fromJson(Map<String, dynamic> json) {
     final rawSymptoms = json['symptoms'] as List<dynamic>? ?? [];
     final rawNotes = json['notes'] as List<dynamic>? ?? [];

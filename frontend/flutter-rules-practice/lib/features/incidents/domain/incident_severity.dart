@@ -1,3 +1,7 @@
+/// Incident severity level.
+///
+/// Values are mapped from the backend enum format:
+/// `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`.
 enum IncidentSeverity {
   low,
   medium,

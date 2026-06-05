@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/incident_status.dart';
 
+/// Visual badge for an incident status.
 class StatusBadge extends StatelessWidget {
   final IncidentStatus status;
 

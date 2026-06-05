@@ -8,6 +8,13 @@ import '../../domain/incident_severity.dart';
 import '../../domain/incident_stats.dart';
 import '../../domain/incident_status.dart';
 
+/// State holder for the incident dashboard.
+///
+/// This notifier loads dashboard data, stores the active filter and exposes the
+/// filtered incident list to the UI.
+///
+/// Widgets remain simple: they render state and send user intent back to this
+/// notifier.
 class IncidentDashboardNotifier extends ChangeNotifier {
   final IncidentApiService _incidentApiService;
 
@@ -25,6 +32,7 @@ class IncidentDashboardNotifier extends ChangeNotifier {
   IncidentStats? get stats => _stats;
   IncidentFilter get filter => _filter;
 
+  /// Incidents visible after applying the current dashboard filter.
   List<Incident> get filteredIncidents {
     return filterIncidents(
       incidents: _incidents,
@@ -32,6 +40,7 @@ class IncidentDashboardNotifier extends ChangeNotifier {
     );
   }
 
+  /// Incidents visible after applying the current dashboard filter.
   Future<void> loadDashboard() async {
     _loading = true;
     _errorMessage = null;

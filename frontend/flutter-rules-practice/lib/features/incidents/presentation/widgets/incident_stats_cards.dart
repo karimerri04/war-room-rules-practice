@@ -4,6 +4,10 @@ import '../../domain/incident_severity.dart';
 import '../../domain/incident_stats.dart';
 import '../../domain/incident_status.dart';
 
+/// Clickable incident statistics cards.
+///
+/// Each card displays an aggregate value and emits a filter intent when tapped.
+/// The filtering itself is handled by the dashboard notifier.
 class IncidentStatsCards extends StatelessWidget {
   final IncidentStats stats;
   final VoidCallback onTotalSelected;

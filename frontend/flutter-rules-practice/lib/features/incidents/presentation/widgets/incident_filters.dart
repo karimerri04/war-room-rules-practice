@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/incident_filter.dart';
 
+/// Displays the active dashboard filter and the number of visible incidents.
 class IncidentFilters extends StatelessWidget {
   final IncidentFilter filter;
   final int visibleCount;

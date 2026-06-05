@@ -1,8 +1,13 @@
+/// Incident lifecycle status.
+///
+/// Values are mapped from the backend enum format:
+/// `OPEN`, `INVESTIGATING`, `RESOLVED`.
 enum IncidentStatus {
   open,
   investigating,
   resolved;
 
+  /// Parses the backend enum value into a Dart enum.
   static IncidentStatus fromJson(String value) {
     return switch (value) {
       'OPEN' => IncidentStatus.open,

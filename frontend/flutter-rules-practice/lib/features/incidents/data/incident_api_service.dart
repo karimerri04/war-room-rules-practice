@@ -8,6 +8,16 @@ import '../domain/incident.dart';
 import '../domain/incident_stats.dart';
 import '../domain/resolve_incident_request.dart';
 
+/// HTTP gateway to the Java incident backend.
+///
+/// Widgets must not call HTTP directly. This service centralizes:
+/// - endpoint URLs
+/// - request serialization
+/// - response parsing
+/// - HTTP error handling
+///
+/// The service intentionally returns domain models instead of raw JSON so that
+/// presentation code can stay focused on UI composition.
 class IncidentApiService {
   Future<List<Incident>> findAll() async {
     final response = await http.get(Uri.parse(ApiConfig.baseUrl));
@@ -87,6 +97,9 @@ class IncidentApiService {
     );
   }
 
+  /// Converts non-2xx HTTP responses into a typed exception.
+  ///
+  /// This keeps error handling consistent for all backend calls.
   void _ensureSuccess(http.Response response) {
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw IncidentApiException(
@@ -97,6 +110,7 @@ class IncidentApiService {
   }
 }
 
+/// Exception raised when the backend returns a non-success HTTP response.
 class IncidentApiException implements Exception {
   final int statusCode;
   final String body;

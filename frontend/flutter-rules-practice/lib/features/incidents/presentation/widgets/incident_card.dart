@@ -5,6 +5,10 @@ import '../../domain/incident.dart';
 import 'severity_badge.dart';
 import 'status_badge.dart';
 
+/// Compact incident summary used in the dashboard list.
+///
+/// The card is intentionally stateless. It receives an [Incident] and navigates
+/// to the details route when selected.
 class IncidentCard extends StatelessWidget {
   final Incident incident;
 

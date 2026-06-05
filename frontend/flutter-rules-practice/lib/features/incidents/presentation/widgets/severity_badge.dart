@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/incident_severity.dart';
 
+/// Visual badge for an incident severity.
 class SeverityBadge extends StatelessWidget {
   final IncidentSeverity severity;
 

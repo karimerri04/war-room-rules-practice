@@ -5,6 +5,15 @@ import '../../domain/add_incident_note_request.dart';
 import '../../domain/incident.dart';
 import '../../domain/resolve_incident_request.dart';
 
+/// State holder for the incident details page.
+///
+/// This notifier owns the detail loading state and mutation state for:
+/// - starting an investigation
+/// - adding an investigation note
+/// - resolving an incident
+///
+/// After each successful mutation, the backend response becomes the new local
+/// incident state.
 class IncidentDetailsNotifier extends ChangeNotifier {
   final IncidentApiService _incidentApiService;
   final String incidentId;
@@ -79,6 +88,10 @@ class IncidentDetailsNotifier extends ChangeNotifier {
     );
   }
 
+  /// Runs a backend mutation and updates the local incident state.
+  ///
+  /// This avoids repeating the same loading/error/success pattern in every
+  /// action method.
   Future<void> _runMutation({
     required String successMessage,
     required Future<Incident> Function() action,

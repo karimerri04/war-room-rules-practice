@@ -8,6 +8,10 @@ import '../state/incident_details_notifier.dart';
 import '../widgets/severity_badge.dart';
 import '../widgets/status_badge.dart';
 
+/// Details screen for a single incident.
+///
+/// This screen uses a [StatefulWidget] only because it owns text controllers.
+/// Backend state and mutation logic remain in [IncidentDetailsNotifier].
 class IncidentDetailsPage extends StatefulWidget {
   const IncidentDetailsPage({super.key});
 
@@ -325,6 +329,10 @@ class _RootCauseAndResolutionCard extends StatelessWidget {
   }
 }
 
+/// User actions available on an incident.
+///
+/// This widget only collects form input and forwards intent to callbacks.
+/// It does not call the backend directly.
 class _ActionsCard extends StatelessWidget {
   final Incident incident;
   final bool saving;
