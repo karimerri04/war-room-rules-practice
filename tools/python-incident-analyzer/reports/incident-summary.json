@@ -1,0 +1,27 @@
+{
+  "totalIncidents": 3,
+  "openIncidents": 3,
+  "investigatingIncidents": 0,
+  "resolvedIncidents": 0,
+  "criticalIncidents": 0,
+  "highIncidents": 1,
+  "mediumIncidents": 2,
+  "lowIncidents": 0,
+  "openCriticalIncidentIds": [],
+  "incidentsWithoutRootCause": [
+    "JAVA-INC-001",
+    "JAVA-INC-002",
+    "JAVA-INC-003"
+  ],
+  "incidentsWithoutResolution": [
+    "JAVA-INC-001",
+    "JAVA-INC-002",
+    "JAVA-INC-003"
+  ],
+  "incidentsWithNotes": [],
+  "recommendations": [
+    "Document root cause for incidents that are still missing one.",
+    "Add resolution details before closing or reviewing incidents."
+  ],
+  "hasRisk": true
+}

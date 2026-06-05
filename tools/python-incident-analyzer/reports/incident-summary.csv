@@ -1,0 +1,13 @@
+metric,value
+total_incidents,3
+open_incidents,3
+investigating_incidents,0
+resolved_incidents,0
+critical_incidents,0
+high_incidents,1
+medium_incidents,2
+low_incidents,0
+open_critical_incidents,0
+without_root_cause,3
+without_resolution,3
+with_notes,0
