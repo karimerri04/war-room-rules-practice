@@ -58,14 +58,14 @@ The backend follows a layered and domain-oriented structure.
 
 Main responsibilities:
 
-* expose REST endpoints
-* validate requests
-* execute use cases
-* maintain incident state in memory
-* map domain objects to DTOs
-* handle errors consistently
-* provide Swagger/OpenAPI documentation
-* provide tests for domain, repository and controller behavior
+- expose REST endpoints
+- validate requests
+- execute use cases
+- maintain incident state in memory
+- map domain objects to DTOs
+- handle errors consistently
+- provide Swagger/OpenAPI documentation
+- provide tests for domain, repository and controller behavior
 
 Conceptual layers:
 
@@ -80,12 +80,12 @@ infrastructure/
 
 The core domain contains:
 
-* `Incident`
-* `IncidentId`
-* `InvestigationNote`
-* `IncidentStatus`
-* `IncidentSeverity`
-* `IncidentRepository`
+- `Incident`
+- `IncidentId`
+- `InvestigationNote`
+- `IncidentStatus`
+- `IncidentSeverity`
+- `IncidentRepository`
 
 Statuses:
 
@@ -108,12 +108,12 @@ CRITICAL
 
 The application layer contains use cases such as:
 
-* find all incidents
-* find incident by id
-* get incident statistics
-* start investigation
-* add investigation note
-* resolve incident
+- find all incidents
+- find incident by id
+- get incident statistics
+- start investigation
+- add investigation note
+- resolve incident
 
 This keeps business operations separated from the REST controller.
 
@@ -137,16 +137,16 @@ src/
 
 React responsibilities:
 
-* display incident dashboard
-* filter incidents
-* show clickable statistics
-* navigate to incident details
-* start investigation
-* add notes
-* resolve incidents
-* show loading and error states
-* protect the app with an Error Boundary
-* validate behavior with Vitest and React Testing Library
+- display incident dashboard
+- filter incidents
+- show clickable statistics
+- navigate to incident details
+- start investigation
+- add notes
+- resolve incidents
+- show loading and error states
+- protect the app with an Error Boundary
+- validate behavior with Vitest and React Testing Library
 
 ## Angular frontend architecture
 
@@ -167,13 +167,13 @@ src/app/
 
 Angular responsibilities:
 
-* display incident dashboard
-* filter incidents with signals
-* emit filter events from presentational components
-* load data through injectable services
-* use RxJS for async streams
-* use reactive forms for notes and resolution
-* test reusable UI components
+- display incident dashboard
+- filter incidents with signals
+- emit filter events from presentational components
+- load data through injectable services
+- use RxJS for async streams
+- use reactive forms for notes and resolution
+- test reusable UI components
 
 ## Flutter frontend architecture
 
@@ -211,18 +211,18 @@ lib/
 
 Flutter responsibilities:
 
-* display incident dashboard
-* filter incidents through a pure Dart function
-* show clickable statistics
-* navigate with `go_router`
-* load data through an isolated API service
-* manage screen state with `Provider` and `ChangeNotifier`
-* represent loading, error, empty and success states
-* start investigation
-* add notes
-* resolve incidents
-* validate domain logic with unit tests
-* validate visible UI behavior with widget tests
+- display incident dashboard
+- filter incidents through a pure Dart function
+- show clickable statistics
+- navigate with `go_router`
+- load data through an isolated API service
+- manage screen state with `Provider` and `ChangeNotifier`
+- represent loading, error, empty and success states
+- start investigation
+- add notes
+- resolve incidents
+- validate domain logic with unit tests
+- validate visible UI behavior with widget tests
 
 ## Python Incident Analyzer architecture
 
@@ -236,10 +236,10 @@ It is intentionally placed under `tools/` because it is not a backend service an
 
 Its responsibility is to:
 
-* call the Java backend
-* parse incident JSON
-* analyze the incident queue
-* generate JSON, CSV and Markdown reports
+- call the Java backend
+- parse incident JSON
+- analyze the incident queue
+- generate JSON, CSV and Markdown reports
 
 The Java backend remains the source of truth.
 
@@ -301,26 +301,26 @@ reports/
 
 Responsibility split:
 
-| Layer        | Responsibility                                                    |
-| ------------ | ----------------------------------------------------------------- |
-| `cli.py`     | Parse command-line arguments and orchestrate the analysis command |
-| `client/`    | Communicate with the Java backend                                 |
-| `domain/`    | Represent incidents, statuses, severities, notes and stats        |
-| `analysis/`  | Compute operational insights                                      |
-| `reporting/` | Write JSON, CSV and Markdown reports                              |
-| `tests/`     | Protect domain, client, analysis and reporting behavior           |
+| Layer | Responsibility |
+|---|---|
+| `cli.py` | Parse command-line arguments and orchestrate the analysis command |
+| `client/` | Communicate with the Java backend |
+| `domain/` | Represent incidents, statuses, severities, notes and stats |
+| `analysis/` | Compute operational insights |
+| `reporting/` | Write JSON, CSV and Markdown reports |
+| `tests/` | Protect domain, client, analysis and reporting behavior |
 
 Python responsibilities:
 
-* provide a CLI entry point
-* read incidents from the Java backend
-* transform JSON into Python dataclasses
-* analyze status, severity and risk signals
-* generate machine-readable JSON
-* generate spreadsheet-friendly CSV
-* generate human-readable Markdown
-* validate behavior with pytest
-* enforce style and modernization with ruff
+- provide a CLI entry point
+- read incidents from the Java backend
+- transform JSON into Python dataclasses
+- analyze status, severity and risk signals
+- generate machine-readable JSON
+- generate spreadsheet-friendly CSV
+- generate human-readable Markdown
+- validate behavior with pytest
+- enforce style and modernization with ruff
 
 ## Design principles
 
@@ -378,31 +378,31 @@ React, Angular and Flutter solve the same business problem using their own idiom
 
 React uses:
 
-* hooks
-* custom hooks
-* lifted state
-* memoization
-* component composition
+- hooks
+- custom hooks
+- lifted state
+- memoization
+- component composition
 
 Angular uses:
 
-* standalone components
-* services
-* signals
-* RxJS
-* reactive forms
-* inputs and outputs
+- standalone components
+- services
+- signals
+- RxJS
+- reactive forms
+- inputs and outputs
 
 Flutter uses:
 
-* widgets
-* Material 3
-* `go_router`
-* `Provider`
-* `ChangeNotifier`
-* feature-based folders
-* pure Dart filtering logic
-* widget tests
+- widgets
+- Material 3
+- `go_router`
+- `Provider`
+- `ChangeNotifier`
+- feature-based folders
+- pure Dart filtering logic
+- widget tests
 
 ### Tool-specific Python module
 
@@ -410,18 +410,18 @@ Python solves a different problem: automation and reporting.
 
 Python uses:
 
-* virtual environment
-* `pyproject.toml`
-* `argparse`
-* `requests`
-* dataclasses
-* `StrEnum`
-* `pathlib`
-* JSON writing
-* CSV writing
-* Markdown generation
-* pytest
-* ruff
+- virtual environment
+- `pyproject.toml`
+- `argparse`
+- `requests`
+- dataclasses
+- `StrEnum`
+- `pathlib`
+- JSON writing
+- CSV writing
+- Markdown generation
+- pytest
+- ruff
 
 ### Feature-based organization
 
@@ -442,43 +442,43 @@ This improves readability, maintainability and interview defensibility.
 
 Backend tests cover:
 
-* domain behavior
-* value objects
-* repository behavior
-* controller behavior with MockMvc
+- domain behavior
+- value objects
+- repository behavior
+- controller behavior with MockMvc
 
 Frontend tests cover:
 
-* rendering
-* inputs
-* outputs
-* links
-* filter behavior
-* user-visible outcomes
-* navigation behavior
+- rendering
+- inputs
+- outputs
+- links
+- filter behavior
+- user-visible outcomes
+- navigation behavior
 
 Python tests cover:
 
-* CLI parser behavior
-* enum parsing
-* dataclass JSON parsing
-* API client behavior
-* API error handling
-* analysis logic
-* report writer output
+- CLI parser behavior
+- enum parsing
+- dataclass JSON parsing
+- API client behavior
+- API error handling
+- analysis logic
+- report writer output
 
 ## Why this architecture is useful
 
 This project is useful for interview preparation because it shows:
 
-* REST API design
-* Spring Boot application structure
-* frontend architecture in React, Angular and Flutter
-* clean separation of concerns
-* practical testing strategy
-* Python automation and reporting
-* API consumption from an external tool
-* ability to explain technical decisions across multiple technologies
+- REST API design
+- Spring Boot application structure
+- frontend architecture in React, Angular and Flutter
+- clean separation of concerns
+- practical testing strategy
+- Python automation and reporting
+- API consumption from an external tool
+- ability to explain technical decisions across multiple technologies
 
 It also shows the difference between:
 

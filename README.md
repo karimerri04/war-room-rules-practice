@@ -1,8 +1,8 @@
 # War Room Rules Practice
 
-Training project designed to practice Java, Spring Boot, React, Angular and Flutter through a technical incident resolution dashboard.
+Training project designed to practice Java, Spring Boot, React, Angular, Flutter and Python through a technical incident resolution dashboard and supporting automation tools.
 
-The goal is not to display isolated rules as quiz content. The goal is to apply programming, architecture and testing rules directly in real code.
+The goal is not to display isolated rules as quiz content. The goal is to apply programming, architecture, automation and testing rules directly in real code.
 
 ## Project overview
 
@@ -14,6 +14,7 @@ It contains:
 - a React frontend implementing the incident dashboard with React idioms
 - an Angular frontend implementing the same domain with Angular idioms
 - a Flutter frontend implementing the same domain with Flutter and Dart idioms
+- a Python CLI tool for analyzing backend incidents and generating reports
 - Postman collections for manual API testing
 - documentation explaining architecture, API and learning objectives
 
@@ -27,6 +28,8 @@ war-room-rules-practice/
 │   ├── react-rules-practice/
 │   ├── angular-rules-practice/
 │   └── flutter-rules-practice/
+├── tools/
+│   └── python-incident-analyzer/
 ├── postman/
 ├── docs/
 │   ├── api.md
@@ -34,7 +37,8 @@ war-room-rules-practice/
 │   ├── backend-java-rules.md
 │   ├── frontend-react-rules.md
 │   ├── frontend-angular-rules.md
-│   └── frontend-flutter-rules.md
+│   ├── frontend-flutter-rules.md
+│   └── python-incident-analyzer-rules.md
 ├── README.md
 └── docker-compose.yml
 ```
@@ -139,6 +143,49 @@ The Flutter frontend practices:
 - pure Dart filtering logic
 - unit tests
 - widget tests
+
+## Python Incident Analyzer
+
+Location:
+
+```txt
+tools/python-incident-analyzer
+```
+
+The Python tool practices:
+
+- virtual environments
+- Python packaging with `pyproject.toml`
+- argparse CLI
+- requests
+- dataclasses
+- StrEnum
+- pathlib
+- JSON report generation
+- CSV report generation
+- Markdown report generation
+- pytest
+- ruff
+
+The tool consumes the Java backend and generates incident analysis reports.
+
+It is not a backend service. It is an automation and reporting tool.
+
+Run analysis:
+
+```bash
+cd tools/python-incident-analyzer
+source .venv/Scripts/activate
+incident-analyzer analyze --output reports
+```
+
+Generated reports:
+
+```txt
+reports/incident-summary.json
+reports/incident-summary.csv
+reports/incident-summary.md
+```
 
 ## Postman
 
@@ -279,6 +326,41 @@ Run static analysis:
 flutter analyze
 ```
 
+## Running the Python Incident Analyzer
+
+From:
+
+```bash
+cd tools/python-incident-analyzer
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+```
+
+Install the project with development dependencies:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+```
+
+Run analysis:
+
+```bash
+incident-analyzer analyze --output reports
+```
+
+Run tests and lint:
+
+```bash
+pytest
+ruff check .
+```
+
 ## Documentation
 
 Global documentation is available under:
@@ -295,10 +377,11 @@ Recommended reading order:
 4. `docs/frontend-react-rules.md`
 5. `docs/frontend-angular-rules.md`
 6. `docs/frontend-flutter-rules.md`
+7. `docs/python-incident-analyzer-rules.md`
 
 ## Learning objective
 
-This project demonstrates how the same incident-resolution domain can be implemented across different layers and frontend frameworks.
+This project demonstrates how the same incident-resolution domain can be implemented across different layers, frontend frameworks and supporting automation tools.
 
 The backend focuses on Java, Spring Boot, REST, domain modeling and tests.
 
@@ -307,3 +390,5 @@ The React frontend focuses on hooks, component composition and user-driven behav
 The Angular frontend focuses on standalone components, services, signals, RxJS and reactive forms.
 
 The Flutter frontend focuses on widgets, Dart models, Provider, ChangeNotifier, go_router, testable filtering logic and widget tests.
+
+The Python Incident Analyzer focuses on automation, API consumption, data parsing, analysis, report generation, pytest and linting with ruff.

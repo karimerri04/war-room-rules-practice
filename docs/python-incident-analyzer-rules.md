@@ -6,7 +6,7 @@ The goal is not to display Python rules as a quiz. The goal is to apply Python r
 
 ## Project location
 
-```text
+```txt
 tools/python-incident-analyzer
 ```
 
@@ -16,90 +16,45 @@ The Python module is not a backend and not a frontend.
 
 It is a CLI tool used for:
 
-* reading incident data from the Java backend;
-* analyzing the incident queue;
-* generating JSON, CSV and Markdown reports.
-
-```text
-React / Angular / Flutter frontends
-               |
-               v
-       Java Spring Boot backend
-               ^
-               |
-Python Incident Analyzer
-```
+- reading incident data from the Java backend
+- analyzing the incident queue
+- generating JSON, CSV and Markdown reports
 
 The Java backend remains the source of truth.
 
 ## Python rules applied
 
-## 1. Environment first
+### 1. Environment first
 
-Before writing Python code, verify the interpreter:
+The project starts by checking the Python version:
 
 ```bash
 python --version
 ```
 
-The project requires:
+The project requires Python 3.11+.
 
-```text
-Python 3.11+
-```
+### 2. Virtual environment
 
-Rule applied:
-
-```text
-Always verify the Python version before starting a project.
-```
-
-## 2. Virtual environment
-
-The project uses a local virtual environment:
+Dependencies are isolated with:
 
 ```bash
 python -m venv .venv
 ```
 
-This keeps dependencies isolated from other projects.
+This avoids conflicts between projects.
 
-Rule applied:
+### 3. pyproject.toml
 
-```text
-A Python project must isolate its dependencies.
-```
+Project metadata, dependencies, CLI entry points, pytest settings and ruff settings are centralized in:
 
-## 3. pyproject.toml as project configuration
-
-The project is configured through:
-
-```text
+```txt
 pyproject.toml
 ```
 
-It defines:
+### 4. CLI with argparse
 
-* project metadata;
-* runtime dependencies;
-* development dependencies;
-* CLI entry point;
-* pytest configuration;
-* ruff configuration.
-
-Rule applied:
-
-```text
-Keep project configuration explicit and reproducible.
-```
-
-## 4. CLI with argparse
-
-The command-line interface uses:
-
-```text
-argparse
-```
+The command-line interface uses `argparse`.
 
 Main commands:
 
@@ -108,333 +63,143 @@ incident-analyzer --version
 incident-analyzer analyze --output reports
 ```
 
-Rule applied:
+### 5. Explicit src package layout
 
-```text
-argparse transforms a script into a real command.
-```
+The package is stored under:
 
-## 5. Explicit package structure
-
-The project uses a `src` layout:
-
-```text
+```txt
 src/incident_analyzer/
 ```
 
-This avoids import confusion and keeps the package structure explicit.
+This keeps imports predictable and avoids confusing local files with installable package files.
 
-Rule applied:
+### 6. Domain model with dataclasses
 
-```text
-A module organizes related code in separate files.
-```
+The project models backend data with dataclasses:
 
-## 6. Domain model with dataclasses
+- `Incident`
+- `InvestigationNote`
+- `IncidentStats`
+- `IncidentAnalysis`
 
-The project models incident data with dataclasses:
+### 7. Enums for controlled values
 
-```text
-Incident
-InvestigationNote
-IncidentStats
-IncidentAnalysis
-```
+The project uses `StrEnum` for backend enum values:
 
-Rule applied:
+- `IncidentStatus`
+- `IncidentSeverity`
 
-```text
-A class describes a real domain concept.
-```
+This avoids scattering raw strings such as `OPEN`, `HIGH` or `RESOLVED`.
 
-Dataclasses reduce boilerplate while keeping data structures clear and typed.
-
-## 7. Enums for controlled values
-
-The project uses enums for backend values:
-
-```text
-IncidentStatus
-IncidentSeverity
-```
-
-Instead of scattering raw strings, the code uses named values:
-
-```text
-OPEN
-INVESTIGATING
-RESOLVED
-
-LOW
-MEDIUM
-HIGH
-CRITICAL
-```
-
-Rule applied:
-
-```text
-Use explicit domain concepts instead of vague strings.
-```
-
-## 8. Safe JSON parsing
+### 8. Safe JSON parsing
 
 Backend JSON is parsed through factory methods:
 
-```text
-Incident.from_json()
-InvestigationNote.from_json()
-IncidentStats.from_json()
-```
+- `Incident.from_json()`
+- `InvestigationNote.from_json()`
+- `IncidentStats.from_json()`
 
-The UI or reporting layers do not parse raw JSON directly.
+Required fields fail fast. Optional fields use safe defaults.
 
-Rule applied:
-
-```text
-Transform a JSON response into dict/list Python, then into domain objects.
-```
-
-## 9. HTTP access isolated in one client
+### 9. HTTP access isolated in one client
 
 HTTP calls are centralized in:
 
-```text
+```txt
 IncidentApiClient
 ```
 
-This class owns:
+The CLI, analysis service and report writers do not call `requests` directly.
 
-* URLs;
-* GET requests;
-* timeout configuration;
-* HTTP status validation;
-* JSON parsing;
-* API exceptions.
+### 10. HTTP status checked before JSON parsing
 
-Rule applied:
+The client checks the response status code before using the response body.
 
-```text
-Check the HTTP response before processing the content.
-```
+Invalid backend responses are converted into `IncidentApiError`.
 
-## 10. Explicit API exceptions
-
-Backend and network failures are converted into:
-
-```text
-IncidentApiError
-```
-
-Rule applied:
-
-```text
-Raise explicit exceptions for invalid or impossible situations.
-```
-
-This prevents the rest of the application from depending on low-level `requests` exceptions.
-
-## 11. Analysis separate from API and files
+### 11. Analysis is separate from API and files
 
 The analysis logic lives in:
 
-```text
+```txt
 IncidentAnalysisService
 ```
 
-It receives incidents and returns an analysis result.
+It receives incidents and returns an `IncidentAnalysis`.
 
-It does not:
+It does not call HTTP, parse CLI arguments or write files.
 
-* call the backend;
-* read files;
-* write files;
-* parse CLI arguments.
+### 12. Standard library first
 
-Rule applied:
+The project uses standard library tools where appropriate:
 
-```text
-Functions and classes should have clear responsibilities.
-```
+- `argparse`
+- `dataclasses`
+- `enum.StrEnum`
+- `collections.Counter`
+- `pathlib`
+- `csv`
+- `json`
 
-## 12. Counter for aggregations
+### 13. pathlib for paths
 
-The analysis service uses `Counter` to compute status and severity counts.
+Report writers use `Path` instead of manually building paths as strings.
 
-Rule applied:
+This improves portability across Windows, Linux and macOS.
 
-```text
-Use the standard library before writing manual loops.
-```
+### 14. Context-aware file writing
 
-## 13. pathlib for file paths
-
-Report writers use:
-
-```text
-pathlib.Path
-```
-
-Rule applied:
-
-```text
-Do not build file paths manually.
-```
-
-This keeps paths reliable across Windows, Linux and macOS.
-
-## 14. Context-aware file writing
-
-Reports are written with safe file operations:
+Files are written with safe file operations:
 
 ```python
 with output_path.open("w", encoding="utf-8") as file:
     ...
 ```
 
-Rule applied:
+### 15. Report writers by format
 
-```text
-Open files with with.
-```
+Each writer has one responsibility:
 
-## 15. JSON report writer
+- `JsonReportWriter`
+- `CsvReportWriter`
+- `MarkdownReportWriter`
 
-The JSON writer produces:
-
-```text
-reports/incident-summary.json
-```
-
-It is intended for machine-readable output.
-
-Rule applied:
-
-```text
-json.dump saves a Python structure as JSON.
-```
-
-## 16. CSV report writer
-
-The CSV writer produces:
-
-```text
-reports/incident-summary.csv
-```
-
-It is intended for spreadsheet-friendly output.
-
-Rule applied:
-
-```text
-csv.writer writes rows without manually managing commas.
-```
-
-## 17. Markdown report writer
-
-The Markdown writer produces:
-
-```text
-reports/incident-summary.md
-```
-
-It is intended for human-readable summaries.
-
-Rule applied:
-
-```text
-Automate report generation instead of writing repetitive documents manually.
-```
-
-## 18. Tests with pytest
-
-The project uses:
-
-```text
-pytest
-```
+### 16. Tests with pytest
 
 Tests cover:
 
-* CLI parsing;
-* enum parsing;
-* dataclass JSON parsing;
-* API client behavior;
-* analysis logic;
-* report generation.
+- CLI parsing
+- domain parsing
+- API client behavior
+- API error handling
+- analysis logic
+- report writer output
 
-Rule applied:
+### 17. Temporary test paths
 
-```text
-Tests protect future changes and clarify expected behavior.
-```
+Report writer tests use `tmp_path` to avoid writing into real project folders.
 
-## 19. Fixtures and temporary paths
+### 18. Mocking HTTP calls
 
-Report writer tests use `tmp_path`.
+API client tests mock `requests.get` so tests do not require the Java backend to run.
 
-This avoids writing test files into the real project reports folder.
+### 19. Linting with Ruff
 
-Rule applied:
-
-```text
-Tests should isolate temporary resources.
-```
-
-## 20. Mocking HTTP calls
-
-API client tests mock `requests.get`.
-
-This allows tests to verify behavior without requiring the backend to run.
-
-Rule applied:
-
-```text
-Mock external systems when testing internal behavior.
-```
-
-## 21. Linting with Ruff
-
-The project uses:
+Ruff enforces style, import order and Python modernization:
 
 ```bash
 ruff check .
 ```
 
-Ruff helps enforce:
+### 20. Readability over cleverness
 
-* import order;
-* line length;
-* Python modernization;
-* common bug prevention.
+The project uses simple classes, explicit names and direct control flow.
 
-Rule applied:
-
-```text
-Regular style reduces mental load.
-```
-
-## 22. Readability over cleverness
-
-The project avoids unnecessary Python tricks.
-
-The design prefers:
-
-* explicit classes;
-* clear names;
-* simple functions;
-* small modules;
-* direct control flow.
-
-Rule applied:
-
-```text
-Python privileges readability before cleverness.
-```
+The goal is to learn Python through readable automation code.
 
 ## Current command flow
 
-```text
+```txt
 CLI
  |
  v
@@ -457,7 +222,7 @@ reports/
 
 From:
 
-```text
+```txt
 tools/python-incident-analyzer
 ```
 
@@ -476,17 +241,17 @@ incident-analyzer analyze --output reports
 
 Expected output files:
 
-```text
+```txt
 reports/incident-summary.json
 reports/incident-summary.csv
 reports/incident-summary.md
 ```
 
-## What this module teaches
+## Learning objective
 
-This module teaches Python through a real, useful workflow:
+This module teaches Python through a real workflow:
 
-```text
+```txt
 read API data
 → parse JSON
 → model the domain
@@ -494,13 +259,3 @@ read API data
 → generate reports
 → test everything
 ```
-
-It gives a practical foundation for later Python work such as:
-
-* automation scripts;
-* data analysis;
-* backend utilities;
-* scheduled jobs;
-* CI tools;
-* report generation;
-* API clients.

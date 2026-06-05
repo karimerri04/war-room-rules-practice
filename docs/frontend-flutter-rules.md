@@ -21,16 +21,9 @@ The goal is not to display Flutter rules as quiz content. The goal is to apply F
 
 The Flutter application is a frontend client.
 
-It consumes the Java Spring Boot backend through HTTP REST.
+It consumes the Java Spring Boot backend through HTTP and does not own incident state.
 
-The backend remains the source of truth for:
-
-- incident state
-- status transitions
-- investigation notes
-- resolution actions
-
-Flutter sends user intent and displays the backend response.
+The backend remains the source of truth.
 
 ## Feature structure
 
@@ -46,231 +39,112 @@ lib/
 └── features/
     └── incidents/
         ├── data/
-        │   └── incident_api_service.dart
         ├── domain/
-        │   ├── add_incident_note_request.dart
-        │   ├── filter_incidents.dart
-        │   ├── incident.dart
-        │   ├── incident_filter.dart
-        │   ├── incident_severity.dart
-        │   ├── incident_stats.dart
-        │   ├── incident_status.dart
-        │   ├── investigation_note.dart
-        │   └── resolve_incident_request.dart
         └── presentation/
-            ├── pages/
-            │   ├── incident_dashboard_page.dart
-            │   └── incident_details_page.dart
-            ├── state/
-            │   ├── incident_dashboard_notifier.dart
-            │   └── incident_details_notifier.dart
-            └── widgets/
-                ├── incident_card.dart
-                ├── incident_filters.dart
-                ├── incident_stats_cards.dart
-                ├── severity_badge.dart
-                └── status_badge.dart
 ```
 
-## Rules practiced
+## Rules applied
 
-### Flutter is a frontend layer
+### Flutter is the UI layer
 
-Flutter is not a backend service.
+The Flutter app is not a backend service.
 
-The correct placement is:
+It displays data, captures user intent and delegates mutations to the backend API.
 
-```txt
-frontend/flutter-rules-practice
-```
+### Widgets stay small and focused
 
-The incorrect placement would be:
-
-```txt
-backend/flutter-incident-service
-```
-
-### Backend as source of truth
-
-The Flutter app does not own incident lifecycle rules.
-
-It calls backend endpoints such as:
-
-```txt
-PATCH /api/java-incidents/{id}/start-investigation
-POST  /api/java-incidents/{id}/notes
-PATCH /api/java-incidents/{id}/resolve
-```
-
-The backend returns the updated incident, and Flutter renders that response.
-
-### Everything visible is composed from widgets
-
-The UI is built from focused widgets:
+The dashboard is composed of focused widgets:
 
 - `IncidentCard`
 - `IncidentStatsCards`
 - `IncidentFilters`
 - `StatusBadge`
 - `SeverityBadge`
-
-This keeps the widget tree readable and easier to test.
 
 ### StatelessWidget by default
 
-Most UI components are stateless because they only receive data and callbacks.
+Most widgets are stateless.
 
-Examples:
+`StatefulWidget` is used only when local lifecycle is required, such as text controllers in the details page.
 
-- `IncidentCard`
-- `IncidentStatsCards`
-- `IncidentFilters`
-- `StatusBadge`
-- `SeverityBadge`
+### No HTTP calls inside build()
 
-`StatefulWidget` is used only where local controller lifecycle is required, such as text fields in the incident details page.
-
-### No network calls inside build()
-
-Widgets do not call HTTP directly.
-
-HTTP access is isolated in:
+Network access is isolated in:
 
 ```txt
 IncidentApiService
 ```
 
-Screen state is handled by:
+Widgets render state and delegate user actions.
 
-```txt
-IncidentDashboardNotifier
-IncidentDetailsNotifier
-```
+### State management is explicit
 
-This keeps `build()` focused on UI composition.
+The app uses:
 
-### Data layer isolation
+- `Provider`
+- `ChangeNotifier`
+- screen-level notifiers
 
-`IncidentApiService` centralizes:
+Dashboard state lives in `IncidentDashboardNotifier`.
 
-- endpoint URLs
-- HTTP methods
-- request serialization
-- response parsing
-- non-2xx error handling
+Details page state lives in `IncidentDetailsNotifier`.
 
-Widgets receive domain models instead of raw JSON.
+### Routing is centralized
 
-### Provider and ChangeNotifier for simple state
-
-The project uses `Provider` and `ChangeNotifier` because the state requirements are simple:
-
-- load dashboard
-- store active filter
-- expose filtered incidents
-- load one incident
-- run backend mutations
-- expose loading, saving, success and error states
-
-A heavier pattern such as Bloc would be unnecessary for this scope.
-
-### Declarative routing with go_router
-
-Routes are centralized in:
+Navigation is declared in:
 
 ```txt
 app/router.dart
 ```
 
-Implemented routes:
+The application supports:
 
 ```txt
-/               -> redirects to /incidents
-/incidents      -> incident dashboard
-/incidents/:id  -> incident details page
+/incidents
+/incidents/:id
 ```
 
-This avoids scattering route definitions across widgets.
+### Domain parsing is isolated
 
-### Pure filtering logic
+Dart models convert backend JSON into typed objects:
 
-Dashboard filtering is extracted into a pure Dart function:
+- `Incident`
+- `InvestigationNote`
+- `IncidentStats`
+- `IncidentStatus`
+- `IncidentSeverity`
+
+### Filtering is pure and testable
+
+Incident filtering is extracted into a pure Dart function:
 
 ```txt
 filterIncidents()
 ```
 
-Benefits:
+This makes the filtering rules testable without rendering widgets.
 
-- no widget dependency
-- no API dependency
-- easy unit testing
-- predictable behavior
+### UI states are explicit
 
-### Explicit async states
-
-Screens represent the important UI states explicitly:
+The screens represent:
 
 - loading
 - error
 - empty
-- loaded content
-- mutation success
-- mutation error
+- success
+- mutation feedback
 
-This makes the UI more resilient and easier to explain.
+### Tests protect behavior
 
-### Widget testing
-
-The Flutter frontend includes widget tests for visible behavior.
-
-Examples:
-
-- status badge label
-- severity badge label
-- incident card content
-- incident card navigation
-
-### Unit testing
-
-The Flutter frontend includes unit tests for logic and parsing.
-
-Examples:
+Flutter tests cover:
 
 - enum parsing
-- enum serialization
-- incident JSON parsing
-- investigation note JSON parsing
-- incident stats JSON parsing
-- incident filtering
+- model parsing
+- filtering logic
+- badges
+- incident cards
+- navigation behavior
 
-## Backend endpoints used
+## Learning objective
 
-```txt
-GET    /api/java-incidents
-GET    /api/java-incidents/{id}
-GET    /api/java-incidents/stats
-PATCH  /api/java-incidents/{id}/start-investigation
-POST   /api/java-incidents/{id}/notes
-PATCH  /api/java-incidents/{id}/resolve
-```
-
-## Validation commands
-
-```bash
-flutter analyze
-flutter test
-flutter run -d chrome
-```
-
-## Interview explanation
-
-A concise explanation of this Flutter frontend:
-
-```txt
-I implemented Flutter as a third frontend for the same incident-resolution backend.
-The backend remains the source of truth. Flutter consumes the REST API through an isolated data service.
-The app uses a feature-based structure, Provider and ChangeNotifier for simple state, go_router for navigation,
-and pure Dart functions for testable business-side UI logic such as filtering.
-The UI is composed from small reusable widgets and covered with unit and widget tests.
-```
+The Flutter frontend demonstrates how to build a small but realistic client application with clean UI composition, separated state, typed models, route-based navigation and tests.
