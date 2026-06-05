@@ -9,7 +9,7 @@ from incident_analyzer.analysis.incident_analysis import IncidentAnalysis
 
 
 class JsonReportWriter:
-    """Write incident analysis as a JSON report."""
+    """Write incident analysis as a machine-readable JSON report."""
 
     def write(self, analysis: IncidentAnalysis, output_dir: Path) -> Path:
         """Write the JSON report and return the created file path."""

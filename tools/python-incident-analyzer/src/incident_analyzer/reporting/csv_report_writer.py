@@ -9,7 +9,7 @@ from incident_analyzer.analysis.incident_analysis import IncidentAnalysis
 
 
 class CsvReportWriter:
-    """Write incident analysis counters as a CSV report."""
+    """Write incident analysis counters as a spreadsheet-friendly CSV report."""
 
     def write(self, analysis: IncidentAnalysis, output_dir: Path) -> Path:
         """Write the CSV report and return the created file path."""

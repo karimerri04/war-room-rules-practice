@@ -1,4 +1,9 @@
-"""Command-line interface for the Python Incident Analyzer."""
+"""Command-line interface for the Python Incident Analyzer.
+
+This module is intentionally thin. It parses command-line arguments and
+orchestrates the analysis workflow, but it does not own HTTP access, domain
+parsing, analysis rules or file writing.
+"""
 
 from __future__ import annotations
 
@@ -67,7 +72,15 @@ def main() -> None:
 
 
 def run_analyze_command(base_url: str, output_dir: Path) -> None:
-    """Fetch incidents, analyze them and write reports."""
+    """Run the complete incident analysis workflow.
+
+    Flow:
+    1. read incidents from the Java backend;
+    2. compute operational analysis;
+    3. write JSON, CSV and Markdown reports.
+
+    The Java backend remains the source of truth. This command only reads data.
+    """
     client = IncidentApiClient(base_url=base_url)
     analysis_service = IncidentAnalysisService()
 

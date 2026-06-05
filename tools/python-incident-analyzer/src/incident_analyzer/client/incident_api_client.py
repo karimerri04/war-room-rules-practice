@@ -1,4 +1,9 @@
-"""HTTP client for the Java incident backend."""
+"""HTTP client for the Java incident backend.
+
+This module isolates all network access from the rest of the Python tool.
+The CLI, analysis service and report writers should never call `requests`
+directly.
+"""
 
 from __future__ import annotations
 
@@ -15,8 +20,12 @@ from incident_analyzer.domain.incident_stats import IncidentStats
 class IncidentApiClient:
     """Client responsible for reading incidents from the Java backend.
 
-    The CLI and analysis layers should not know how HTTP requests are performed.
-    This class centralizes URLs, status-code validation and JSON parsing.
+    Responsibilities:
+    - build backend URLs;
+    - execute HTTP GET requests;
+    - validate HTTP status codes;
+    - decode JSON responses;
+    - convert JSON into Python domain objects.
     """
 
     def __init__(self, base_url: str = DEFAULT_BASE_URL, timeout_seconds: float = 5.0):

@@ -14,8 +14,9 @@ from incident_analyzer.domain.investigation_note import InvestigationNote
 class Incident:
     """Incident returned by the Java backend.
 
-    The model mirrors the backend JSON contract and normalizes optional fields
-    so analysis and reporting code can work with predictable values.
+    This object mirrors the backend JSON contract. Optional backend fields are
+    normalized to safe Python defaults so analysis and reporting code can use
+    predictable values.
     """
 
     incident_id: str
@@ -32,7 +33,11 @@ class Incident:
 
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> Incident:
-        """Create an incident from backend JSON."""
+        """Create an incident from backend JSON.
+
+        Required fields are accessed directly to fail fast when the backend contract
+        changes. Optional fields use safe defaults.
+        """
         raw_symptoms = data.get("symptoms") or []
         raw_notes = data.get("notes") or []
 

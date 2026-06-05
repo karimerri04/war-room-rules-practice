@@ -11,10 +11,13 @@ from incident_analyzer.domain.incident_status import IncidentStatus
 
 
 class IncidentAnalysisService:
-    """Analyze incidents and produce operational insights."""
+    """Analyze incidents and produce operational insights.
+    This service is pure domain logic. It does not call the backend, read files,
+    write files or parse CLI arguments.
+    """
 
     def analyze(self, incidents: list[Incident]) -> IncidentAnalysis:
-        """Analyze the incident queue."""
+        """Analyze the incident queue and return computed counters and risks."""
         status_counts = Counter(incident.status for incident in incidents)
         severity_counts = Counter(incident.severity for incident in incidents)
 
