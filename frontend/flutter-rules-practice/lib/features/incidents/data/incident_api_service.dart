@@ -26,7 +26,9 @@ class IncidentApiService {
 
     _ensureSuccess(response);
 
-    return Incident.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return Incident.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<IncidentStats> getStats() async {
@@ -46,7 +48,9 @@ class IncidentApiService {
 
     _ensureSuccess(response);
 
-    return Incident.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return Incident.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<Incident> addNote(
@@ -61,7 +65,9 @@ class IncidentApiService {
 
     _ensureSuccess(response);
 
-    return Incident.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return Incident.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<Incident> resolve(
@@ -76,7 +82,9 @@ class IncidentApiService {
 
     _ensureSuccess(response);
 
-    return Incident.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return Incident.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   void _ensureSuccess(http.Response response) {

@@ -24,7 +24,20 @@ class IncidentDashboardPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: _DashboardBody(notifier: notifier),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Flutter dashboard is rendering',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: _DashboardBody(notifier: notifier),
+            ),
+          ],
+        ),
       ),
     );
   }

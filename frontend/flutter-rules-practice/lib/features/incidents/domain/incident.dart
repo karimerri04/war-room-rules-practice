@@ -8,7 +8,9 @@ class Incident {
   final String description;
   final IncidentStatus status;
   final IncidentSeverity severity;
-  final String serviceName;
+  final List<String> symptoms;
+  final String rootCause;
+  final String resolution;
   final String createdAt;
   final String? resolvedAt;
   final List<InvestigationNote> notes;
@@ -19,13 +21,16 @@ class Incident {
     required this.description,
     required this.status,
     required this.severity,
-    required this.serviceName,
+    required this.symptoms,
+    required this.rootCause,
+    required this.resolution,
     required this.createdAt,
     required this.resolvedAt,
     required this.notes,
   });
 
   factory Incident.fromJson(Map<String, dynamic> json) {
+    final rawSymptoms = json['symptoms'] as List<dynamic>? ?? [];
     final rawNotes = json['notes'] as List<dynamic>? ?? [];
 
     return Incident(
@@ -34,11 +39,17 @@ class Incident {
       description: json['description'] as String,
       status: IncidentStatus.fromJson(json['status'] as String),
       severity: IncidentSeverity.fromJson(json['severity'] as String),
-      serviceName: json['serviceName'] as String,
+      symptoms: rawSymptoms.map((symptom) => symptom as String).toList(),
+      rootCause: json['rootCause'] as String? ?? '',
+      resolution: json['resolution'] as String? ?? '',
       createdAt: json['createdAt'] as String,
       resolvedAt: json['resolvedAt'] as String?,
       notes: rawNotes
-          .map((note) => InvestigationNote.fromJson(note as Map<String, dynamic>))
+          .map(
+            (note) => InvestigationNote.fromJson(
+          note as Map<String, dynamic>,
+        ),
+      )
           .toList(),
     );
   }

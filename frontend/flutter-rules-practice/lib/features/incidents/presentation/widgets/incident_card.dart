@@ -46,11 +46,22 @@ class IncidentCard extends StatelessWidget {
                 incident.description,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 12),
-              Text(
-                'Service: ${incident.serviceName}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              if (incident.symptoms.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Symptoms',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ...incident.symptoms.map(
+                      (symptom) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text('• $symptom'),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

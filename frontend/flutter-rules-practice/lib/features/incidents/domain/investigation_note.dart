@@ -11,9 +11,9 @@ class InvestigationNote {
 
   factory InvestigationNote.fromJson(Map<String, dynamic> json) {
     return InvestigationNote(
-      author: json['author'] as String,
-      message: json['message'] as String,
-      createdAt: json['createdAt'] as String,
+      author: json['author'] as String? ?? '',
+      message: json['message'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
     );
   }
 }

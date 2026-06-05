@@ -32,7 +32,7 @@ class IncidentDashboardNotifier extends ChangeNotifier {
 
       _incidents = results[0] as List<Incident>;
       _stats = results[1] as IncidentStats;
-    } catch (error) {
+    } catch (_) {
       _errorMessage = 'Unable to load incidents dashboard.';
     } finally {
       _loading = false;
