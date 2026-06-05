@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../state/incident_dashboard_notifier.dart';
 import '../widgets/incident_card.dart';
+import '../widgets/incident_filters.dart';
 import '../widgets/incident_stats_cards.dart';
 
 class IncidentDashboardPage extends StatelessWidget {
@@ -24,20 +25,7 @@ class IncidentDashboardPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Flutter dashboard is rendering',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-              child: _DashboardBody(notifier: notifier),
-            ),
-          ],
-        ),
+        child: _DashboardBody(notifier: notifier),
       ),
     );
   }
@@ -73,6 +61,8 @@ class _DashboardBody extends StatelessWidget {
       );
     }
 
+    final filteredIncidents = notifier.filteredIncidents;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -89,9 +79,20 @@ class _DashboardBody extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         if (notifier.stats != null) ...[
-          IncidentStatsCards(stats: notifier.stats!),
-          const SizedBox(height: 24),
+          IncidentStatsCards(
+            stats: notifier.stats!,
+            onTotalSelected: notifier.clearFilters,
+            onStatusSelected: notifier.filterByStatus,
+            onSeveritySelected: notifier.filterBySeverity,
+          ),
+          const SizedBox(height: 16),
         ],
+        IncidentFilters(
+          filter: notifier.filter,
+          visibleCount: filteredIncidents.length,
+          onClearFilters: notifier.clearFilters,
+        ),
+        const SizedBox(height: 24),
         Text(
           'Incidents',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -99,9 +100,17 @@ class _DashboardBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        ...notifier.incidents.map(
-              (incident) => IncidentCard(incident: incident),
-        ),
+        if (filteredIncidents.isEmpty)
+          const Card(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('No incidents match the selected filter.'),
+            ),
+          )
+        else
+          ...filteredIncidents.map(
+                (incident) => IncidentCard(incident: incident),
+          ),
       ],
     );
   }
