@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/incident.dart';
 import 'severity_badge.dart';
@@ -19,7 +20,7 @@ class IncidentCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          // Details route will be added in the next step.
+          context.go('/incidents/${incident.id}');
         },
         child: Padding(
           padding: const EdgeInsets.all(16),
