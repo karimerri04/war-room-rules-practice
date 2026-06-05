@@ -1,6 +1,6 @@
 # War Room Rules Practice
 
-Training project designed to practice Java, Spring Boot, React and Angular through a technical incident resolution dashboard.
+Training project designed to practice Java, Spring Boot, React, Angular and Flutter through a technical incident resolution dashboard.
 
 The goal is not to display isolated rules as quiz content. The goal is to apply programming, architecture and testing rules directly in real code.
 
@@ -13,6 +13,7 @@ It contains:
 - a Java Spring Boot backend acting as the source of truth
 - a React frontend implementing the incident dashboard with React idioms
 - an Angular frontend implementing the same domain with Angular idioms
+- a Flutter frontend implementing the same domain with Flutter and Dart idioms
 - Postman collections for manual API testing
 - documentation explaining architecture, API and learning objectives
 
@@ -24,14 +25,16 @@ war-room-rules-practice/
 │   └── java-incident-service/
 ├── frontend/
 │   ├── react-rules-practice/
-│   └── angular-rules-practice/
+│   ├── angular-rules-practice/
+│   └── flutter-rules-practice/
 ├── postman/
 ├── docs/
 │   ├── api.md
 │   ├── architecture.md
 │   ├── backend-java-rules.md
 │   ├── frontend-react-rules.md
-│   └── frontend-angular-rules.md
+│   ├── frontend-angular-rules.md
+│   └── frontend-flutter-rules.md
 ├── README.md
 └── docker-compose.yml
 ```
@@ -114,6 +117,28 @@ The Angular frontend practices:
 - inputs and outputs
 - feature-based architecture
 - Angular component tests
+
+## Flutter frontend
+
+Location:
+
+```txt
+frontend/flutter-rules-practice
+```
+
+The Flutter frontend practices:
+
+- Dart models and enums
+- Material 3 widgets
+- feature-based architecture
+- `go_router`
+- Provider
+- ChangeNotifier
+- HTTP API access
+- loading, error, empty and success states
+- pure Dart filtering logic
+- unit tests
+- widget tests
 
 ## Postman
 
@@ -222,6 +247,38 @@ Run build:
 npm run build
 ```
 
+## Running the Flutter frontend
+
+From:
+
+```bash
+cd frontend/flutter-rules-practice
+```
+
+Install dependencies:
+
+```bash
+flutter pub get
+```
+
+Start development server on Chrome:
+
+```bash
+flutter run -d chrome
+```
+
+Run tests:
+
+```bash
+flutter test
+```
+
+Run static analysis:
+
+```bash
+flutter analyze
+```
+
 ## Documentation
 
 Global documentation is available under:
@@ -237,6 +294,7 @@ Recommended reading order:
 3. `docs/backend-java-rules.md`
 4. `docs/frontend-react-rules.md`
 5. `docs/frontend-angular-rules.md`
+6. `docs/frontend-flutter-rules.md`
 
 ## Learning objective
 
@@ -247,3 +305,5 @@ The backend focuses on Java, Spring Boot, REST, domain modeling and tests.
 The React frontend focuses on hooks, component composition and user-driven behavior.
 
 The Angular frontend focuses on standalone components, services, signals, RxJS and reactive forms.
+
+The Flutter frontend focuses on widgets, Dart models, Provider, ChangeNotifier, go_router, testable filtering logic and widget tests.

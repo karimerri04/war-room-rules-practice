@@ -12,13 +12,13 @@ The project deliberately avoids quiz-style rule display. Instead, each rule is a
 
 ```txt
 React frontend   ┐
-                 ├── HTTP REST ── Java Spring Boot backend
-Angular frontend ┘
+Angular frontend ├── HTTP REST ── Java Spring Boot backend
+Flutter frontend ┘
 ```
 
 The Java backend is the source of truth.
 
-The React and Angular applications are two independent frontend implementations of the same domain.
+The React, Angular and Flutter applications are three independent frontend implementations of the same domain.
 
 They are not backend services.
 
@@ -30,9 +30,17 @@ war-room-rules-practice/
 │   └── java-incident-service/
 ├── frontend/
 │   ├── react-rules-practice/
-│   └── angular-rules-practice/
+│   ├── angular-rules-practice/
+│   └── flutter-rules-practice/
 ├── postman/
 ├── docs/
+│   ├── api.md
+│   ├── architecture.md
+│   ├── backend-java-rules.md
+│   ├── frontend-react-rules.md
+│   ├── frontend-angular-rules.md
+│   └── frontend-flutter-rules.md
+├── README.md
 └── docker-compose.yml
 ```
 
@@ -159,17 +167,85 @@ Angular responsibilities:
 - use reactive forms for notes and resolution
 - test reusable UI components
 
+## Flutter frontend architecture
+
+The Flutter frontend is organized by application area and feature.
+
+```txt
+lib/
+├── main.dart
+├── app/
+│   ├── router.dart
+│   └── war_room_app.dart
+├── core/
+│   └── config/
+│       └── api_config.dart
+└── features/
+    └── incidents/
+        ├── data/
+        │   └── incident_api_service.dart
+        ├── domain/
+        │   ├── add_incident_note_request.dart
+        │   ├── filter_incidents.dart
+        │   ├── incident.dart
+        │   ├── incident_filter.dart
+        │   ├── incident_severity.dart
+        │   ├── incident_stats.dart
+        │   ├── incident_status.dart
+        │   ├── investigation_note.dart
+        │   └── resolve_incident_request.dart
+        └── presentation/
+            ├── pages/
+            ├── state/
+            └── widgets/
+```
+
+Flutter responsibilities:
+
+- display incident dashboard
+- filter incidents through a pure Dart function
+- show clickable statistics
+- navigate with `go_router`
+- load data through an isolated API service
+- manage screen state with `Provider` and `ChangeNotifier`
+- represent loading, error, empty and success states
+- start investigation
+- add notes
+- resolve incidents
+- validate domain logic with unit tests
+- validate visible UI behavior with widget tests
+
 ## Design principles
 
 ### One backend source of truth
 
 The backend owns incident state.
 
-React and Angular consume the same backend API.
+React, Angular and Flutter consume the same backend API.
+
+### Frontends are clients, not microservices
+
+The frontend applications are not backend services.
+
+Do not create structures such as:
+
+```txt
+backend/react-incident-service
+backend/angular-incident-service
+backend/flutter-incident-service
+```
+
+The correct structure is:
+
+```txt
+frontend/react-rules-practice
+frontend/angular-rules-practice
+frontend/flutter-rules-practice
+```
 
 ### Framework-specific frontends
 
-React and Angular solve the same business problem using their own idioms.
+React, Angular and Flutter solve the same business problem using their own idioms.
 
 React uses:
 
@@ -188,9 +264,20 @@ Angular uses:
 - reactive forms
 - inputs and outputs
 
+Flutter uses:
+
+- widgets
+- Material 3
+- `go_router`
+- `Provider`
+- `ChangeNotifier`
+- feature-based folders
+- pure Dart filtering logic
+- widget tests
+
 ### Feature-based organization
 
-Incident-related code is grouped under the incident feature in both frontends.
+Incident-related code is grouped under the incident feature in each frontend.
 
 This improves readability, maintainability and interview defensibility.
 
@@ -211,6 +298,7 @@ Frontend tests cover:
 - links
 - filter behavior
 - user-visible outcomes
+- navigation behavior
 
 ## Why this architecture is useful
 
@@ -218,7 +306,7 @@ This project is useful for interview preparation because it shows:
 
 - REST API design
 - Spring Boot application structure
-- frontend architecture in React and Angular
+- frontend architecture in React, Angular and Flutter
 - clean separation of concerns
 - practical testing strategy
 - ability to explain technical decisions
